@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In — Furnicher Studio</title>
+    <meta name="description" content="Sign in to your Furnicher account to track orders, manage commissions, and access exclusive member benefits." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/src/login.css" />
+  </head>
+  <body>
+
+    <!-- Custom Cursor -->
+    <div id="cursor" class="lp-cursor"></div>
+    <div id="cursor-follower" class="lp-cursor-follower"></div>
+
+    <!-- Back to Home -->
+    <a href="/index.html" class="back-home" id="back-home-link" aria-label="Back to Furnicher home">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Back to Home
+    </a>
+
+    <div class="login-layout">
+
+      <!-- ── LEFT PANEL: Image + Brand ── -->
+      <aside class="login-panel-image">
+        <div class="panel-bg">
+          <img src="/login_bg.png" alt="Furnicher artisan chair by window" class="panel-bg-img" id="panel-bg-img" />
+          <div class="panel-overlay"></div>
+        </div>
+
+        <!-- Floating brand badge -->
+        <div class="panel-brand">
+          <div class="panel-logo">
+            <span class="logo-mark-lg">F</span>
+            <span class="logo-word">FURNICHER</span>
+          </div>
+          <blockquote class="panel-quote">
+            <p>"Every piece begins with a conversation."</p>
+            <cite>— Aldric Voss, Founder</cite>
+          </blockquote>
+        </div>
+
+        <!-- Floating stat chips -->
+        <div class="panel-chips">
+          <div class="chip chip-1">
+            <span class="chip-num">2,400+</span>
+            <span class="chip-label">Pieces Crafted</span>
+          </div>
+          <div class="chip chip-2">
+            <span class="chip-num">15yr</span>
+            <span class="chip-label">Guarantee</span>
+          </div>
+          <div class="chip chip-3">
+            <span class="chip-num">890+</span>
+            <span class="chip-label">Happy Clients</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ── RIGHT PANEL: Auth Forms ── -->
+      <main class="login-panel-form" id="auth-panel">
+
+        <div class="form-container" id="form-container">
+
+          <!-- ─ SIGN IN ─ -->
+          <div class="auth-view active" id="view-signin">
+            <div class="auth-header">
+              <div class="mobile-logo">
+                <span class="logo-mark">F</span>
+                <span class="logo-text">FURNICHER</span>
+              </div>
+              <span class="auth-eyebrow">Welcome back</span>
+              <h1 class="auth-title">Sign in to<br /><em>your account</em></h1>
+              <p class="auth-subtitle">Access your orders, commissions, and exclusive member benefits.</p>
+            </div>
+
+            <!-- Social Sign In -->
+            <div class="social-auth">
+              <button class="social-btn" id="google-signin-btn" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                Continue with Google
+              </button>
+              <button class="social-btn" id="apple-signin-btn" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.37.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+                Continue with Apple
+              </button>
+            </div>
+
+            <div class="divider"><span>or sign in with email</span></div>
+
+            <form id="signin-form" class="auth-form" novalidate>
+              <div class="field-group">
+                <label for="signin-email">Email Address</label>
+                <div class="input-wrap">
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <input
+                    type="email"
+                    id="signin-email"
+                    name="email"
+                    class="auth-input"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                  />
+                </div>
+                <span class="field-error" id="signin-email-err"></span>
+              </div>
+
+              <div class="field-group">
+                <div class="label-row">
+                  <label for="signin-password">Password</label>
+                  <button type="button" class="forgot-link" id="forgot-link">Forgot password?</button>
+                </div>
+                <div class="input-wrap">
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <input
+                    type="password"
+                    id="signin-password"
+                    name="password"
+                    class="auth-input"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    required
+                  />
+                  <button type="button" class="toggle-pwd" id="toggle-signin-pwd" aria-label="Toggle password visibility">
+                    <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <span class="field-error" id="signin-pwd-err"></span>
+              </div>
+
+              <div class="remember-row">
+                <label class="check-label" for="remember-me">
+                  <input type="checkbox" id="remember-me" name="remember" />
+                  <span class="check-box"></span>
+                  <span>Remember me for 30 days</span>
+                </label>
+              </div>
+
+              <button type="submit" class="auth-btn" id="signin-submit-btn">
+                <span class="btn-text">Sign In</span>
+                <span class="btn-loader" style="display:none;">
+                  <svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                </span>
+              </button>
+            </form>
+
+            <p class="auth-switch">
+              Don't have an account?
+              <button type="button" class="switch-btn" id="go-register">Create one →</button>
+            </p>
+          </div>
+
+          <!-- ─ REGISTER ─ -->
+          <div class="auth-view" id="view-register">
+            <div class="auth-header">
+              <div class="mobile-logo">
+                <span class="logo-mark">F</span>
+                <span class="logo-text">FURNICHER</span>
+              </div>
+              <span class="auth-eyebrow">Join the studio</span>
+              <h1 class="auth-title">Create your<br /><em>account</em></h1>
+              <p class="auth-subtitle">Become a member for early access to new collections and order tracking.</p>
+            </div>
+
+            <div class="social-auth">
+              <button class="social-btn" id="google-register-btn" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                Sign up with Google
+              </button>
+            </div>
+
+            <div class="divider"><span>or register with email</span></div>
+
+            <form id="register-form" class="auth-form" novalidate>
+              <div class="name-row">
+                <div class="field-group">
+                  <label for="reg-firstname">First Name</label>
+                  <div class="input-wrap">
+                    <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <input type="text" id="reg-firstname" name="firstname" class="auth-input" placeholder="Aldric" autocomplete="given-name" required />
+                  </div>
+                  <span class="field-error" id="reg-fn-err"></span>
+                </div>
+                <div class="field-group">
+                  <label for="reg-lastname">Last Name</label>
+                  <div class="input-wrap">
+                    <input type="text" id="reg-lastname" name="lastname" class="auth-input" placeholder="Voss" autocomplete="family-name" style="padding-left:1rem;" required />
+                  </div>
+                  <span class="field-error" id="reg-ln-err"></span>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="reg-email">Email Address</label>
+                <div class="input-wrap">
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <input type="email" id="reg-email" name="email" class="auth-input" placeholder="you@example.com" autocomplete="email" required />
+                </div>
+                <span class="field-error" id="reg-email-err"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="reg-password">Password</label>
+                <div class="input-wrap">
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <input type="password" id="reg-password" name="password" class="auth-input" placeholder="Min. 8 characters" autocomplete="new-password" required />
+                  <button type="button" class="toggle-pwd" id="toggle-reg-pwd" aria-label="Toggle password visibility">
+                    <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <span class="field-error" id="reg-pwd-err"></span>
+                <!-- Password strength -->
+                <div class="pwd-strength" id="pwd-strength">
+                  <div class="strength-bar">
+                    <div class="strength-fill" id="strength-fill"></div>
+                  </div>
+                  <span class="strength-label" id="strength-label">—</span>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="reg-confirm">Confirm Password</label>
+                <div class="input-wrap">
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <input type="password" id="reg-confirm" name="confirm" class="auth-input" placeholder="Re-enter password" autocomplete="new-password" required />
+                </div>
+                <span class="field-error" id="reg-confirm-err"></span>
+              </div>
+
+              <div class="checkbox-field">
+                <label class="check-label" for="reg-terms">
+                  <input type="checkbox" id="reg-terms" name="terms" required />
+                  <span class="check-box"></span>
+                  <span>I agree to the <a href="#" class="text-link" id="terms-link">Terms of Service</a> and <a href="#" class="text-link" id="privacy-link">Privacy Policy</a></span>
+                </label>
+              </div>
+
+              <div class="checkbox-field">
+                <label class="check-label" for="reg-newsletter">
+                  <input type="checkbox" id="reg-newsletter" name="newsletter" />
+                  <span class="check-box"></span>
+                  <span>Send me exclusive offers and new collection announcements</span>
+                </label>
+              </div>
+
+              <button type="submit" class="auth-btn" id="register-submit-btn">
+                <span class="btn-text">Create Account</span>
+                <span class="btn-loader" style="display:none;">
+                  <svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                </span>
+              </button>
+            </form>
+
+            <p class="auth-switch">
+              Already a member?
+              <button type="button" class="switch-btn" id="go-signin">Sign in →</button>
+            </p>
+          </div>
+
+          <!-- ─ FORGOT PASSWORD ─ -->
+          <div class="auth-view" id="view-forgot">
+            <div class="auth-header">
+              <span class="auth-eyebrow">Account recovery</span>
+              <h1 class="auth-title">Reset your<br /><em>password</em></h1>
+              <p class="auth-subtitle">Enter your email address and we'll send you a secure reset link.</p>
+            </div>
+
+            <form id="forgot-form" class="auth-form" novalidate>
+              <div class="field-group">
+                <label for="forgot-email">Email Address</label>
+                <div class="input-wrap">
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <input type="email" id="forgot-email" name="email" class="auth-input" placeholder="you@example.com" autocomplete="email" required />
+                </div>
+                <span class="field-error" id="forgot-email-err"></span>
+              </div>
+
+              <button type="submit" class="auth-btn" id="forgot-submit-btn">
+                <span class="btn-text">Send Reset Link</span>
+                <span class="btn-loader" style="display:none;">
+                  <svg class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                </span>
+              </button>
+            </form>
+
+            <p class="auth-switch">
+              <button type="button" class="switch-btn" id="back-to-signin">← Back to Sign In</button>
+            </p>
+          </div>
+
+          <!-- ─ FORGOT SUCCESS ─ -->
+          <div class="auth-view" id="view-forgot-success">
+            <div class="success-state">
+              <div class="success-ring">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <h2 class="success-title">Check your inbox</h2>
+              <p class="success-msg">We've sent a password reset link to <strong id="reset-email-display"></strong>. It will expire in 30 minutes.</p>
+              <button type="button" class="auth-btn outline-btn" id="back-signin-from-success">Return to Sign In</button>
+            </div>
+          </div>
+
+        </div><!-- /form-container -->
+
+        <!-- Trust badges -->
+        <div class="trust-row">
+          <div class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            SSL Secured
+          </div>
+          <div class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Data Encrypted
+          </div>
+          <div class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+            GDPR Compliant
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <script type="module" src="/src/login.js"></script>
+  </body>
+</html>
