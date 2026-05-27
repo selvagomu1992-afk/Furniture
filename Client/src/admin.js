@@ -1,6 +1,7 @@
+import API_BASE from './config.js';
 import './admin.css';
 
-const API = '/api/admin';
+const API = `${API_BASE}/api/admin`;
 
 function getToken() { return localStorage.getItem('token'); }
 function getHeaders() { return { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` }; }
@@ -55,7 +56,7 @@ function setupImageUpload(name) {
     const fd = new FormData();
     fd.append('image', file);
     try {
-      const res = await fetch('/api/upload', {
+      const res = await fetch(`${API_BASE}/api/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${getToken()}` },
         body: fd,

@@ -3,6 +3,7 @@
    "And Verity" Editorial Luxury Mode
    ============================================= */
 
+import API_BASE from './config.js';
 import './style.css';
 
 // ─── DATA ──────────────────────────────────────
@@ -617,7 +618,7 @@ async function refreshUserProfile() {
   const token = localStorage.getItem('token');
   if (!token) return;
   try {
-    const r = await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } });
+    const r = await fetch(`${API_BASE}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
     const d = await r.json();
     if (d.success) {
       const existing = JSON.parse(localStorage.getItem('user') || '{}');
@@ -859,7 +860,7 @@ async function submitOrder() {
 
   try {
     // Fetch real DB products to find a matching productId
-    const prodRes  = await fetch('/api/products');
+    const prodRes  = await fetch(`${API_BASE}/api/products`);
     const prodData = await prodRes.json();
     const products = prodData.products || [];
 
@@ -903,7 +904,7 @@ async function submitOrder() {
       country,
     };
 
-    const res  = await fetch('/api/orders', {
+    const res  = await fetch(`${API_BASE}/api/orders`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body:    JSON.stringify(body),
@@ -916,7 +917,7 @@ async function submitOrder() {
         const fn = document.getElementById('first-name')?.value.trim();
         const ln = document.getElementById('last-name')?.value.trim();
         const ph = document.getElementById('phone')?.value.trim();
-        const addrRes = await fetch('/api/auth/me', {
+        const addrRes = await fetch(`${API_BASE}/api/auth/me`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({ firstName: fn, lastName: ln, phone: ph, country, address: deliveryAddress }),
@@ -1017,7 +1018,7 @@ function initContactForm() {
     }
 
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch(`${API_BASE}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, subject, message: msg }),
@@ -1067,7 +1068,7 @@ function initSmoothNav() {
 // ─── COMPANY INFO (Dynamic from Admin) ──────────────────
 async function initCompanyInfo() {
   try {
-    const res = await fetch('/api/settings/address');
+    const res = await fetch(`${API_BASE}/api/settings/address`);
     if (!res.ok) return;
     const data = await res.json();
     if (!data.success || !data.address) return;

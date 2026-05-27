@@ -1,3 +1,4 @@
+import API_BASE from './config.js';
 import './orders.css';
 
 // ─── Auth Guard ──────────────────────────────
@@ -22,7 +23,7 @@ document.getElementById('orders-signout-btn').addEventListener('click', () => {
 async function loadOrders() {
   const container = document.getElementById('orders-list');
   try {
-    const res = await fetch('/api/auth/me', {
+    const res = await fetch(`${API_BASE}/api/auth/me`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
     const data = await res.json();
@@ -87,7 +88,7 @@ function closeModal() {
 
 window.viewOrder = async (id) => {
   try {
-    const res = await fetch(`/api/orders/${id}`, {
+    const res = await fetch(`${API_BASE}/api/orders/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
     const data = await res.json();

@@ -3,6 +3,7 @@
    Sign In / Register / Forgot Password
    ============================================= */
 
+import API_BASE from './config.js';
 import './login.css';
 
 // ─── INIT ───────────────────────────────────────
@@ -100,7 +101,7 @@ function initSignInForm() {
     setLoading('signin-submit-btn', true);
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password: pwd }),
@@ -167,16 +168,10 @@ function initRegisterForm() {
     setLoading('register-submit-btn', true);
 
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: fn,
-          lastName: ln,
-          email,
-          password: pwd,
-          newsletter: document.getElementById('reg-newsletter')?.checked || false,
-        }),
+        body: JSON.stringify({ firstName, lastName, email, password, newsletter }),
       });
 
       const data = await res.json();
@@ -229,7 +224,7 @@ function initForgotForm() {
     setLoading('forgot-submit-btn', true);
 
     try {
-      await fetch('/api/auth/forgot-password', {
+      await fetch(`${API_BASE}/api/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
