@@ -75,7 +75,7 @@ app.use(
 
 // ─── SERVE FRONTEND (production) ──────────────────
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const clientDist = path.resolve(__dirname, '..', 'Client', 'dist');
+const clientDist = path.resolve(__dirname, '..', 'Client', 'build');
 if (fs.existsSync(clientDist)) {
   app.use(express.static(clientDist));
   app.use((req, res, next) => {
