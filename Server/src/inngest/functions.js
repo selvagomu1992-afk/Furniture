@@ -12,25 +12,25 @@ export const sendWelcomeEmail = inngest.createFunction(
       await transporter.sendMail({
         from: process.env.EMAIL_FROM,
         to: email,
-        subject: 'Welcome to Furnicher Studio 🌿',
+        subject: 'Welcome to Jangid 🌿',
         html: `
           <!DOCTYPE html>
           <html>
           <body style="font-family:'Georgia',serif;background:#F5F0E8;margin:0;padding:0;">
             <div style="max-width:580px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;margin-top:40px;">
               <div style="background:#2C1810;padding:40px 40px 32px;text-align:center;">
-                <div style="width:52px;height:52px;background:#F5F0E8;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:600;color:#2C1810;margin-bottom:16px;">F</div>
-                <h1 style="color:#F5F0E8;font-size:1.6rem;font-weight:300;margin:0;letter-spacing:0.04em;">FURNICHER</h1>
+                <div style="width:52px;height:52px;background:#F5F0E8;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:600;color:#2C1810;margin-bottom:16px;">J</div>
+                <h1 style="color:#F5F0E8;font-size:1.6rem;font-weight:300;margin:0;letter-spacing:0.04em;">JANGID</h1>
                 <p style="color:rgba(245,240,232,0.6);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;margin:8px 0 0;">Handcrafted for lifetimes</p>
               </div>
               <div style="padding:40px;">
                 <h2 style="font-size:1.8rem;font-weight:400;color:#2C1810;margin:0 0 16px;">Welcome, ${firstName}.</h2>
-                <p style="color:#4A2E1E;line-height:1.8;margin-bottom:20px;">Your Furnicher account is ready. You can now track commissions, manage your wishlist, and get early access to new collections.</p>
+                <p style="color:#4A2E1E;line-height:1.8;margin-bottom:20px;">Your Jangid account is ready. You can now track commissions, manage your wishlist, and get early access to new collections.</p>
                 <p style="color:#4A2E1E;line-height:1.8;margin-bottom:32px;">Every piece we create starts with a conversation. When you're ready to begin yours, we're here.</p>
                 <a href="${process.env.CLIENT_URL}" style="display:inline-block;background:#2C1810;color:#F5F0E8;padding:14px 32px;border-radius:6px;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;font-family:'Inter',sans-serif;">Explore Collections</a>
               </div>
               <div style="padding:24px 40px;border-top:1px solid #E8DFD0;color:#7A4F36;font-size:0.78rem;line-height:1.6;">
-                <p style="margin:0;">© 2025 Furnicher Studio · 12 Artisan Lane, Burlington, VT · <a href="${process.env.CLIENT_URL}" style="color:#C4714A;">furnicher.com</a></p>
+                <p style="margin:0;">© 2025 Jangid · 12 Artisan Lane, Burlington, VT · <a href="${process.env.CLIENT_URL}" style="color:#C4714A;">jangid.com</a></p>
               </div>
             </div>
           </body>
@@ -53,14 +53,14 @@ export const sendOrderConfirmation = inngest.createFunction(
       await transporter.sendMail({
         from: process.env.EMAIL_FROM,
         to: user.email,
-        subject: `Commission Received — Ref: ${order.referenceCode} | Furnicher`,
+        subject: `Commission Received — Ref: ${order.referenceCode} | Jangid`,
         html: `
           <!DOCTYPE html>
           <html>
           <body style="font-family:'Georgia',serif;background:#F5F0E8;margin:0;padding:0;">
             <div style="max-width:580px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;">
               <div style="background:#2C1810;padding:32px 40px;text-align:center;">
-                <h1 style="color:#F5F0E8;font-size:1.3rem;font-weight:300;letter-spacing:0.06em;margin:0;">FURNICHER</h1>
+                <h1 style="color:#F5F0E8;font-size:1.3rem;font-weight:300;letter-spacing:0.06em;margin:0;">JANGID</h1>
               </div>
               <div style="padding:40px;">
                 <div style="background:#F5F0E8;border-radius:8px;padding:20px 24px;margin-bottom:28px;border-left:3px solid #7A8B6F;">
@@ -89,7 +89,7 @@ export const sendOrderConfirmation = inngest.createFunction(
                   </tr>
                 </table>
 
-                <a href="${process.env.CLIENT_URL}" style="display:inline-block;background:#2C1810;color:#F5F0E8;padding:14px 32px;border-radius:6px;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;font-family:'Inter',sans-serif;">Visit Furnicher</a>
+                <a href="${process.env.CLIENT_URL}" style="display:inline-block;background:#2C1810;color:#F5F0E8;padding:14px 32px;border-radius:6px;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;font-family:'Inter',sans-serif;">Visit Jangid</a>
               </div>
               <div style="padding:20px 40px;border-top:1px solid #E8DFD0;color:#7A4F36;font-size:0.75rem;">
                 <p style="margin:0;">Questions? Reply to this email or call +1 (802) 555-0147</p>
@@ -115,14 +115,14 @@ export const sendPasswordResetEmail = inngest.createFunction(
       await transporter.sendMail({
         from: process.env.EMAIL_FROM,
         to: email,
-        subject: 'Reset your Furnicher password',
+        subject: 'Reset your Jangid password',
         html: `
           <!DOCTYPE html>
           <html>
           <body style="font-family:'Georgia',serif;background:#F5F0E8;margin:0;padding:0;">
             <div style="max-width:520px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;">
               <div style="background:#2C1810;padding:28px 36px;text-align:center;">
-                <h1 style="color:#F5F0E8;font-size:1.2rem;font-weight:300;letter-spacing:0.06em;margin:0;">FURNICHER</h1>
+                <h1 style="color:#F5F0E8;font-size:1.2rem;font-weight:300;letter-spacing:0.06em;margin:0;">JANGID</h1>
               </div>
               <div style="padding:40px;">
                 <h2 style="font-size:1.5rem;font-weight:400;color:#2C1810;margin:0 0 16px;">Password Reset</h2>

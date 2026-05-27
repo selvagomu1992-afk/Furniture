@@ -1,5 +1,5 @@
 /* =============================================
-   FURNICHER — Main JavaScript
+   JANGID — Main JavaScript
    "And Verity" Editorial Luxury Mode
    ============================================= */
 
@@ -186,7 +186,7 @@ function initAuth() {
       btn.href = '#';
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        if (confirm('Sign out of Furnicher?')) {
+        if (confirm('Sign out of Jangid?')) {
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           window.location.reload();

@@ -1,5 +1,5 @@
 /* =============================================
-   FURNICHER — Login Page JavaScript
+   JANGID — Login Page JavaScript
    Sign In / Register / Forgot Password
    ============================================= */
 
@@ -191,7 +191,7 @@ function initRegisterForm() {
       localStorage.setItem('user', JSON.stringify(data.user));
 
       setLoading('register-submit-btn', false);
-      showToast('✓ Account created! Welcome to Furnicher.');
+      showToast('✓ Account created! Welcome to Jangid.');
       setTimeout(() => {
         window.location.href = '/index.html';
       }, 800);
