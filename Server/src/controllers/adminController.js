@@ -198,6 +198,84 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Product deleted' });
 });
 
+// ─── ORDERS ────────────────────────────────────
+export const getAdminOrders = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 20, status, payment } = req.query;
+  const skip = (Number(page) - 1) * Number(limit);
+  const where = {};
+  if (status) where.status = status;
+  if (payment) where.paymentStatus = payment;
+
+  const [orders, total] = await Promise.all([
+    prisma.order.findMany({
+      where, skip, take: Number(limit),
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: { select: { id: true, firstName: true, lastName: true, email: true, address: true } },
+        items: { include: { product: { select: { id: true, name: true, imageUrl: true } } } },
+        _count: { select: { items: true } },
+      },
+    }),
+    prisma.order.count({ where }),
+  ]);
+
+  res.json({ success: true, count: orders.length, total, pages: Math.ceil(total / Number(limit)), orders });
+});
+
+export const getAdminOrder = asyncHandler(async (req, res) => {
+  const order = await prisma.order.findUnique({
+    where: { id: req.params.id },
+    include: {
+      user: { select: { id: true, firstName: true, lastName: true, email: true, phone: true, address: true } },
+      items: { include: { product: { select: { id: true, name: true, slug: true, imageUrl: true, basePrice: true } } } },
+    },
+  });
+  if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
+  res.json({ success: true, order });
+});
+
+export const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const valid = ['PENDING','CONFIRMED','IN_PRODUCTION','QUALITY_CHECK','SHIPPED','DELIVERED','CANCELLED'];
+  if (!valid.includes(status)) {
+    return res.status(400).json({ success: false, message: 'Invalid status' });
+  }
+  const order = await prisma.order.update({ where: { id }, data: { status } });
+  res.json({ success: true, order });
+});
+
+export const updateOrderItemQty = asyncHandler(async (req, res) => {
+  const { id, itemId } = req.params;
+  const { quantity } = req.body;
+  if (!quantity || quantity < 1) {
+    return res.status(400).json({ success: false, message: 'Quantity must be at least 1' });
+  }
+  const item = await prisma.orderItem.findUnique({ where: { id: itemId }, include: { order: true } });
+  if (!item || item.orderId !== id) {
+    return res.status(404).json({ success: false, message: 'Order item not found' });
+  }
+  const updated = await prisma.orderItem.update({
+    where: { id: itemId },
+    data: { quantity: Math.floor(quantity) },
+  });
+  const allItems = await prisma.orderItem.findMany({ where: { orderId: id } });
+  const estimatedPrice = allItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  await prisma.order.update({ where: { id }, data: { estimatedPrice } });
+  res.json({ success: true, item: updated, estimatedPrice });
+});
+
+export const updatePaymentStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { paymentStatus } = req.body;
+  const valid = ['UNPAID','PAID','REFUNDED','FAILED'];
+  if (!valid.includes(paymentStatus)) {
+    return res.status(400).json({ success: false, message: 'Invalid payment status' });
+  }
+  const order = await prisma.order.update({ where: { id }, data: { paymentStatus } });
+  res.json({ success: true, order });
+});
+
 // ─── RATES (Delivery & Pricing Settings) ──────
 export const getRates = asyncHandler(async (_req, res) => {
   const settings = await prisma.setting.findMany({
@@ -243,6 +321,15 @@ export const getAddress = asyncHandler(async (_req, res) => {
   res.json({ success: true, address });
 });
 
+// ─── PUBLIC ADDRESS (No Auth — for homepage) ──
+export const getPublicAddress = asyncHandler(async (_req, res) => {
+  const keys = ['company_name', 'company_address', 'company_phone', 'company_email'];
+  const settings = await prisma.setting.findMany({ where: { key: { in: keys } } });
+  const address = {};
+  for (const s of settings) address[s.key.replace('company_', '')] = s.value;
+  res.json({ success: true, address });
+});
+
 export const updateAddress = asyncHandler(async (req, res) => {
   const allowed = ['company_name', 'company_address', 'company_phone', 'company_email'];
   const upserts = [];
@@ -267,4 +354,67 @@ export const updateAddress = asyncHandler(async (req, res) => {
   }
 
   res.json({ success: true, address });
+});
+
+// ─── ENQUIRIES (Contact Messages) ─────────────
+export const getEnquiries = asyncHandler(async (req, res) => {
+  const { unread, page = 1, limit = 50 } = req.query;
+  const skip = (Number(page) - 1) * Number(limit);
+  const where = unread === 'true' ? { read: false } : {};
+
+  const [messages, total, unreadCount] = await Promise.all([
+    prisma.contactMessage.findMany({
+      where,
+      skip,
+      take: Number(limit),
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.contactMessage.count({ where }),
+    prisma.contactMessage.count({ where: { read: false } }),
+  ]);
+
+  res.json({ success: true, count: messages.length, total, unreadCount, messages });
+});
+
+export const markEnquiryRead = asyncHandler(async (req, res) => {
+  const msg = await prisma.contactMessage.update({
+    where: { id: req.params.id },
+    data: { read: true },
+  });
+  res.json({ success: true, message: msg });
+});
+
+// ─── PINCODE CRUD ──────────────────────────────────
+export const getPincodes = asyncHandler(async (_req, res) => {
+  const pincodes = await prisma.pincode.findMany({ orderBy: { pincode: 'asc' } });
+  res.json({ success: true, pincodes });
+});
+
+export const createPincode = asyncHandler(async (req, res) => {
+  const { pincode, deliveryCharge, areaName } = req.body;
+  if (!pincode || deliveryCharge == null) {
+    return res.status(400).json({ success: false, message: 'Pincode and delivery charge required' });
+  }
+  const existing = await prisma.pincode.findUnique({ where: { pincode } });
+  if (existing) {
+    return res.status(409).json({ success: false, message: 'Pincode already exists' });
+  }
+  const p = await prisma.pincode.create({
+    data: { pincode, deliveryCharge: parseFloat(deliveryCharge), areaName: areaName || '' },
+  });
+  res.status(201).json({ success: true, pincode: p });
+});
+
+export const updatePincode = asyncHandler(async (req, res) => {
+  const { deliveryCharge, areaName } = req.body;
+  const p = await prisma.pincode.update({
+    where: { id: req.params.id },
+    data: { deliveryCharge: parseFloat(deliveryCharge), areaName },
+  });
+  res.json({ success: true, pincode: p });
+});
+
+export const deletePincode = asyncHandler(async (req, res) => {
+  await prisma.pincode.delete({ where: { id: req.params.id } });
+  res.json({ success: true });
 });

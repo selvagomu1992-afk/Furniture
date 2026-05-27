@@ -52,8 +52,8 @@ async function main() {
     where:  { email: 'admin@jangid.com' },
     update: {},
     create: {
-      firstName:    'Aldric',
-      lastName:     'Voss',
+      firstName:    'Jangid',
+      lastName:     'Admin',
       email:        'admin@jangid.com',
       passwordHash,
       role:         'ADMIN',

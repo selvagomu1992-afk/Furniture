@@ -137,10 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProducts();
   initFilters();
   initOrderForm();
+  refreshUserProfile(); // async — fetches latest user profile, updates form if needed
   initTestimonials();
   initRevealObserver();
   initContactForm();
   initSmoothNav();
+  initNavSearch();
+  initCompanyInfo();
 });
 
 // ─── CUSTOM CURSOR ──────────────────────────────
@@ -176,21 +179,45 @@ function initCursor() {
 function initAuth() {
   const userStr = localStorage.getItem('user');
   const token = localStorage.getItem('token');
-  const btn = document.getElementById('nav-signin-btn');
-  if (!btn) return;
+  const container = document.getElementById('nav-signin-btn');
+  if (!container) return;
 
   if (userStr && token) {
     try {
       const user = JSON.parse(userStr);
-      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${user.firstName}`;
-      btn.href = '#';
-      btn.addEventListener('click', (e) => {
+      container.classList.add('logged-in');
+      container.innerHTML = `
+        <div class="user-dropdown">
+          <button class="user-dropdown-trigger">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            ${user.role === 'ADMIN' ? 'Jangid' : user.firstName}
+            <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg>
+          </button>
+          <div class="dropdown-menu">
+            ${user.role === 'ADMIN' ? '<a href="/admin.html" class="dropdown-item">Admin Panel</a>' : ''}
+            <a href="/orders.html" class="dropdown-item">My Orders</a>
+            <button class="dropdown-item" id="logout-btn">Sign Out</button>
+          </div>
+        </div>`;
+
+      container.querySelector('.user-dropdown-trigger').addEventListener('click', (e) => {
         e.preventDefault();
-        if (confirm('Sign out of Jangid?')) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          window.location.reload();
+        e.stopPropagation();
+        container.querySelector('.dropdown-menu').classList.toggle('open');
+      });
+
+      document.addEventListener('click', (e) => {
+        const menu = container.querySelector('.dropdown-menu');
+        if (menu && !container.contains(e.target)) {
+          menu.classList.remove('open');
         }
+      });
+
+      container.querySelector('#logout-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.reload();
       });
     } catch (_) { /* ignore parse errors */ }
   }
@@ -256,13 +283,21 @@ function initCart() {
 
   document.getElementById('cart-checkout-btn')?.addEventListener('click', () => {
     closeCart();
-    document.querySelector('#order')?.scrollIntoView({ behavior: 'smooth' });
+    // Navigate to the order section
+    document.querySelector('#order')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Pre-populate the order form from cart + user session
+    setTimeout(() => {
+      prefillOrderFromCart();
+      prefillUserDetails();
+    }, 500);
   });
 }
 
 function addToCart(product) {
   const existing = state.cart.find(i => i.id === product.id);
-  if (!existing) {
+  if (existing) {
+    existing.qty += 1;
+  } else {
     state.cart.push({ ...product, qty: 1 });
   }
   renderCart();
@@ -273,6 +308,19 @@ function addToCart(product) {
   document.getElementById('cart-sidebar')?.classList.add('open');
   document.getElementById('cart-overlay')?.classList.add('active');
   document.body.style.overflow = 'hidden';
+}
+
+function updateCartQty(id, delta) {
+  const item = state.cart.find(i => i.id === id);
+  if (!item) return;
+  const newQty = item.qty + delta;
+  if (newQty <= 0) {
+    removeFromCart(id);
+    return;
+  }
+  item.qty = newQty;
+  renderCart();
+  updateCartCount();
 }
 
 function removeFromCart(id) {
@@ -303,7 +351,8 @@ function renderCart() {
   let html = '';
   let total = 0;
   state.cart.forEach(item => {
-    total += item.price;
+    const lineTotal = item.price * item.qty;
+    total += lineTotal;
     html += `
       <div class="cart-item-row" id="cart-row-${item.id}">
         <img class="cart-item-img" src="${item.image}" alt="${item.name}" />
@@ -312,6 +361,12 @@ function renderCart() {
           <div class="cart-item-detail">${item.category} · Solid Walnut</div>
           <div class="cart-item-price">$${item.price.toLocaleString()}</div>
         </div>
+        <div class="cart-item-qty">
+          <button class="cart-qty-btn" data-id="${item.id}" data-delta="-1">−</button>
+          <span class="cart-qty-value">${item.qty}</span>
+          <button class="cart-qty-btn" data-id="${item.id}" data-delta="1">+</button>
+        </div>
+        <div class="cart-item-line-total">$${lineTotal.toLocaleString()}</div>
         <button class="cart-item-remove" data-id="${item.id}" aria-label="Remove ${item.name}">✕</button>
       </div>
     `;
@@ -323,13 +378,17 @@ function renderCart() {
   itemsEl.querySelectorAll('.cart-item-remove').forEach(btn => {
     btn.addEventListener('click', () => removeFromCart(btn.dataset.id));
   });
+  itemsEl.querySelectorAll('.cart-qty-btn').forEach(btn => {
+    btn.addEventListener('click', () => updateCartQty(btn.dataset.id, parseInt(btn.dataset.delta)));
+  });
 }
 
 function updateCartCount() {
   const countEl = document.getElementById('cart-count');
   if (!countEl) return;
-  countEl.textContent = state.cart.length;
-  if (state.cart.length > 0) {
+  const totalQty = state.cart.reduce((sum, i) => sum + i.qty, 0);
+  countEl.textContent = totalQty;
+  if (totalQty > 0) {
     countEl.classList.add('visible');
   } else {
     countEl.classList.remove('visible');
@@ -497,6 +556,14 @@ function initOrderForm() {
   renderPieceSelector();
   updatePriceEstimate();
 
+  // Auto-fill from localStorage immediately (no delay)
+  prefillUserDetails();
+
+  // Show a sign-in nudge in Step 3 for guests
+  const token = localStorage.getItem('token');
+  const guestNotice = document.getElementById('order-guest-notice');
+  if (guestNotice) guestNotice.style.display = token ? 'none' : '';
+
   // Step navigation
   document.querySelectorAll('.step-next').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -543,6 +610,22 @@ function initOrderForm() {
     }
     submitOrder();
   });
+}
+
+// Refresh user profile in background (doesn't block form init)
+async function refreshUserProfile() {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+  try {
+    const r = await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } });
+    const d = await r.json();
+    if (d.success) {
+      const existing = JSON.parse(localStorage.getItem('user') || '{}');
+      localStorage.setItem('user', JSON.stringify({ ...existing, ...d.user }));
+      // Re-prefill in case new fields arrived
+      prefillUserDetails();
+    }
+  } catch (_) {}
 }
 
 function renderPieceSelector() {
@@ -688,34 +771,175 @@ function renderReview() {
   `;
 }
 
-function submitOrder() {
-  const ref = 'FCH-' + Date.now().toString(36).toUpperCase();
-  document.getElementById('order-ref').textContent = ref;
+// ─── PREFILL ORDER FORM FROM CART ──────────────────────────
+function prefillOrderFromCart() {
+  if (state.cart.length === 0) return;
+  // Map product category → closest PIECE id
+  const catToPiece = {
+    living:  ['armchair', 'sofa', 'coffee-table'],
+    dining:  ['dining-table', 'sideboard'],
+    bedroom: ['bed-frame'],
+    office:  ['desk', 'shelving'],
+  };
+  const firstItem   = state.cart[0];
+  const candidates  = catToPiece[firstItem.category] || [];
+  let matched = false;
+  for (const pieceId of candidates) {
+    const opt = document.querySelector(`.piece-option[data-id="${pieceId}"]`);
+    if (opt) {
+      document.querySelectorAll('.piece-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      state.orderData.piece    = opt.dataset.id;
+      state.orderData.basePrice = parseInt(opt.dataset.price) || 2450;
+      updatePriceEstimate();
+      matched = true;
+      break;
+    }
+  }
+  // Advance form to step 2 so the user sees their piece already selected
+  if (matched && state.orderFormStep === 1) {
+    goToStep(2);
+  }
+}
 
-  // Hide current step, show success
+// ─── PREFILL USER DETAILS ──────────────────────────────
+function prefillUserDetails() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (!user) return;
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('first-name',     user.firstName);
+    set('last-name',      user.lastName);
+    set('email',          user.email);
+    set('phone',          user.phone);
+    set('country-select', user.country);
+    set('address',        user.address);
+  } catch (_) {}
+}
+
+// ─── SHOW ORDER SUCCESS SCREEN ────────────────────────
+function showOrderSuccess(ref) {
+  const refEl = document.getElementById('order-ref');
+  if (refEl) refEl.textContent = ref;
   document.querySelector('.form-step.active')?.classList.remove('active');
   const success = document.getElementById('form-step-success');
-  if (success) {
-    success.style.display = '';
-    success.classList.add('active');
-  }
-
-  // Update progress - all done
-  document.querySelectorAll('.progress-step').forEach(ps => {
-    ps.classList.remove('active');
-    ps.classList.add('done');
-  });
-
+  if (success) { success.style.display = ''; success.classList.add('active'); }
+  document.querySelectorAll('.progress-step').forEach(ps => { ps.classList.remove('active'); ps.classList.add('done'); });
   showToast('🎉 Commission submitted successfully!');
   state.orderFormStep = 5;
-
-  // Reset state for next visit
+  // Reset form state
   state.orderData = {
     piece: null, material: 'walnut', finish: 'natural',
     upholstery: 'none', dimension: 'standard', notes: '',
     firstName: '', lastName: '', email: '', phone: '',
-    country: '', address: '', timeline: 'standard', basePrice: 0
+    country: '', address: '', timeline: 'standard', basePrice: 0,
   };
+  // Clear cart
+  state.cart = [];
+  renderCart();
+  updateCartCount();
+}
+
+// ─── SUBMIT ORDER (real API call) ───────────────────────
+async function submitOrder() {
+  const token = localStorage.getItem('token');
+  const deliveryAddress = document.getElementById('address')?.value.trim() || '';
+  const country         = document.getElementById('country-select')?.value || '';
+
+  if (!token) {
+    // Guest — treat as a quote request (no real DB order)
+    showOrderSuccess('FCH-' + Date.now().toString(36).toUpperCase());
+    return;
+  }
+
+  // Show a loading state on submit button
+  const submitBtn = document.getElementById('submit-order');
+  const origText  = submitBtn?.querySelector('span')?.textContent;
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.querySelector('span').textContent = 'Submitting…'; }
+
+  try {
+    // Fetch real DB products to find a matching productId
+    const prodRes  = await fetch('/api/products');
+    const prodData = await prodRes.json();
+    const products = prodData.products || [];
+
+    // Map PIECE id → DB product category
+    const pieceToCategory = {
+      sofa:           'LIVING',
+      armchair:       'LIVING',
+      'coffee-table': 'LIVING',
+      'dining-table': 'DINING',
+      sideboard:      'DINING',
+      'bed-frame':    'BEDROOM',
+      desk:           'OFFICE',
+      shelving:       'OFFICE',
+    };
+    const wantedCategory = pieceToCategory[state.orderData.piece] || null;
+
+    // Find best matching product (same category first, then any in-stock)
+    let product = wantedCategory
+      ? products.find(p => p.category === wantedCategory && p.inStock)
+      : null;
+    if (!product) product = products.find(p => p.inStock);
+    if (!product && products.length) product = products[0];
+
+    if (!product) {
+      // No products in DB at all — fall back to quote ref
+      showOrderSuccess('FCH-' + Date.now().toString(36).toUpperCase());
+      return;
+    }
+
+    const body = {
+      productId:        product.id,
+      material:         document.getElementById('material-select')?.value || state.orderData.material,
+      finish:           state.orderData.finish,
+      upholstery:       document.getElementById('upholstery-select')?.value || null,
+      dimension:        document.getElementById('dimension-select')?.value || 'standard',
+      customDimensions: document.getElementById('custom-dimensions')?.value || null,
+      notes:            document.getElementById('special-notes')?.value || null,
+      timeline:         document.getElementById('timeline-select')?.value || 'standard',
+      estimatedPrice:   state.orderData.estimatedPrice || product.basePrice,
+      deliveryAddress,
+      country,
+    };
+
+    const res  = await fetch('/api/orders', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body:    JSON.stringify(body),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      // Save address to profile so we don't ask again
+      try {
+        const fn = document.getElementById('first-name')?.value.trim();
+        const ln = document.getElementById('last-name')?.value.trim();
+        const ph = document.getElementById('phone')?.value.trim();
+        const addrRes = await fetch('/api/auth/me', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ firstName: fn, lastName: ln, phone: ph, country, address: deliveryAddress }),
+        });
+        const addrData = await addrRes.json();
+        if (addrData.success) {
+          const existing = JSON.parse(localStorage.getItem('user') || '{}');
+          localStorage.setItem('user', JSON.stringify({ ...existing, ...addrData.user }));
+        }
+      } catch (_) { /* non-blocking */ }
+      showOrderSuccess(data.order.referenceCode || data.order.id.slice(0, 8).toUpperCase());
+    } else {
+      showToast(data.message || 'Failed to place order. Please try again.');
+    }
+  } catch (err) {
+    showToast('Connection error. Please try again.');
+    console.error('submitOrder:', err);
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      if (submitBtn.querySelector('span')) submitBtn.querySelector('span').textContent = origText || 'Submit Commission';
+    }
+  }
 }
 
 // ─── TESTIMONIALS ───────────────────────────────
@@ -815,7 +1039,9 @@ function initContactForm() {
 function initSmoothNav() {
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
-      const target = document.querySelector(link.getAttribute('href'));
+      const href = link.getAttribute('href');
+      if (!href || href === '#') return;
+      const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth' });
@@ -835,5 +1061,145 @@ function initSmoothNav() {
   // Testimonials responsive resize
   window.addEventListener('resize', () => {
     goToTestimonial(state.currentTestimonial);
+  });
+}
+
+// ─── COMPANY INFO (Dynamic from Admin) ──────────────────
+async function initCompanyInfo() {
+  try {
+    const res = await fetch('/api/settings/address');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.success || !data.address) return;
+
+    const { name, address, phone, email } = data.address;
+
+    // Contact section
+    if (address) {
+      const el = document.getElementById('contact-address');
+      if (el) el.textContent = address;
+    }
+    if (phone) {
+      const el = document.getElementById('contact-phone');
+      if (el) el.textContent = phone;
+    }
+    if (email) {
+      const el = document.getElementById('contact-email');
+      if (el) el.textContent = email;
+    }
+  } catch (_) {
+    // Silently fail — hardcoded defaults remain visible
+  }
+}
+
+// ─── NAVBAR SEARCH ──────────────────────────────
+function initNavSearch() {
+  const toggleBtn  = document.getElementById('nav-search-toggle');
+  const searchBox  = document.getElementById('nav-search-box');
+  const searchInput = document.getElementById('nav-search-input');
+  const clearBtn   = document.getElementById('nav-search-clear');
+  const navSearch  = document.getElementById('nav-search');
+
+  if (!toggleBtn || !searchBox || !searchInput) return;
+
+  // Create results dropdown
+  const resultsEl = document.createElement('div');
+  resultsEl.className = 'nav-search-results';
+  resultsEl.id = 'nav-search-results';
+  navSearch.appendChild(resultsEl);
+
+  let isOpen = false;
+
+  function openSearch() {
+    isOpen = true;
+    searchBox.classList.add('open');
+    toggleBtn.setAttribute('aria-expanded', 'true');
+    setTimeout(() => searchInput.focus(), 50);
+  }
+
+  function closeSearch() {
+    isOpen = false;
+    searchBox.classList.remove('open');
+    resultsEl.classList.remove('open');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+    searchInput.value = '';
+    clearBtn.classList.remove('visible');
+  }
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    isOpen ? closeSearch() : openSearch();
+  });
+
+  clearBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    searchInput.value = '';
+    clearBtn.classList.remove('visible');
+    resultsEl.classList.remove('open');
+    searchInput.focus();
+  });
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    clearBtn.classList.toggle('visible', query.length > 0);
+
+    if (query.length < 1) {
+      resultsEl.classList.remove('open');
+      return;
+    }
+
+    const matches = PRODUCTS.filter(p =>
+      p.name.toLowerCase().includes(query) ||
+      p.category.toLowerCase().includes(query) ||
+      p.desc.toLowerCase().includes(query)
+    ).slice(0, 5);
+
+    if (matches.length === 0) {
+      resultsEl.innerHTML = `<div class="search-no-results">No results for "${searchInput.value}"</div>`;
+    } else {
+      resultsEl.innerHTML = matches.map(p => `
+        <div class="search-result-item" data-id="${p.id}" tabindex="0">
+          <img class="search-result-img" src="${p.image}" alt="${p.name}" loading="lazy" />
+          <div class="search-result-info">
+            <div class="search-result-name">${p.name}</div>
+            <div class="search-result-cat">${p.category}</div>
+          </div>
+          <span class="search-result-price">$${p.price.toLocaleString()}</span>
+        </div>
+      `).join('');
+
+      resultsEl.querySelectorAll('.search-result-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const id = item.dataset.id;
+          // Set filter and scroll to collections
+          const catMap = { living:'living', dining:'dining', bedroom:'bedroom', office:'office' };
+          const product = PRODUCTS.find(p => p.id === id);
+          if (product) {
+            const filterBtn = document.querySelector(`.filter-btn[data-filter="${product.category}"]`);
+            if (filterBtn) filterBtn.click();
+          }
+          document.getElementById('collections')?.scrollIntoView({ behavior: 'smooth' });
+          closeSearch();
+        });
+
+        item.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') item.click();
+        });
+      });
+    }
+
+    resultsEl.classList.add('open');
+  });
+
+  // Keyboard: Escape closes search
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSearch();
+  });
+
+  // Click outside closes
+  document.addEventListener('click', (e) => {
+    if (isOpen && !navSearch.contains(e.target)) {
+      closeSearch();
+    }
   });
 }

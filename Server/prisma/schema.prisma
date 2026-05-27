@@ -163,6 +163,18 @@ model OrderItem {
   @@map("order_items")
 }
 
+// ─── PINCODE ──────────────────────────────────────
+model Pincode {
+  id             String  @id @default(cuid())
+  pincode        String  @unique
+  deliveryCharge Float
+  areaName       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("pincodes")
+}
+
 // ─── CONTACT MESSAGE ─────────────────────────────
 model ContactMessage {
   id        String   @id @default(cuid())

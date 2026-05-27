@@ -196,7 +196,7 @@ function initRegisterForm() {
         window.location.href = '/index.html';
       }, 800);
     } catch (err) {
-      showToast('Connection error. Please try again.');
+      showToast('Registration failed. Please try again.');
       setLoading('register-submit-btn', false);
     }
   });
@@ -315,7 +315,6 @@ function initSocialButtons() {
   });
 }
 
-// ─── HELPERS ────────────────────────────────────
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }

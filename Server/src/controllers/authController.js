@@ -22,6 +22,9 @@ const sendTokenResponse = (user, statusCode, res) => {
       lastName:  user.lastName,
       email:     user.email,
       role:      user.role,
+      phone:     user.phone,
+      country:   user.country,
+      address:   user.address,
     },
   });
 };
@@ -86,7 +89,7 @@ export const getMe = asyncHandler(async (req, res) => {
       id: true, firstName: true, lastName: true, email: true,
       phone: true, country: true, address: true, role: true,
       newsletter: true, createdAt: true,
-      orders: { select: { id: true, referenceCode: true, status: true, createdAt: true }, take: 5, orderBy: { createdAt: 'desc' } },
+      orders: { select: { id: true, referenceCode: true, status: true, paymentStatus: true, estimatedPrice: true, finalPrice: true, createdAt: true }, take: 50, orderBy: { createdAt: 'desc' } },
     },
   });
   res.json({ success: true, user });

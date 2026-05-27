@@ -16,6 +16,7 @@ import paymentRoutes  from './src/routes/payments.js';
 import uploadRoutes   from './src/routes/upload.js';
 import contactRoutes  from './src/routes/contact.js';
 import adminRoutes     from './src/routes/admin.js';
+import settingsRoutes from './src/routes/settings.js';
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -61,6 +62,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/upload',   uploadRoutes);
 app.use('/api/contact',  contactRoutes);
 app.use('/api/admin',    adminRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // ─── INNGEST (background jobs) ───────────────────
 app.use(
