@@ -3,6 +3,8 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { serve } from 'inngest/express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import { inngest }        from './src/inngest/client.js';
 import { inngestFunctions } from './src/inngest/functions.js';
@@ -71,13 +73,16 @@ app.use(
 );
 
 // ─── SERVE FRONTEND (production) ──────────────────
-import path from 'path';
-import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const clientDist = path.resolve(__dirname, '..', 'Client', 'dist');
 app.use(express.static(clientDist));
 app.get('*', (_req, res) => {
   res.sendFile(path.join(clientDist, 'index.html'));
+});
+
+// ─── 404 HANDLER (non-GET API fallback) ──────────
+app.use((_req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
 });
 
 // ─── GLOBAL ERROR HANDLER ───────────────────────
