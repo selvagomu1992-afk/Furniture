@@ -10,6 +10,32 @@ datasource db {
 }
 
 
+// ─── COLLECTION ─────────────────────────────────
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products    Product[]
+
+  @@map("collections")
+}
+
+// ─── SETTING ────────────────────────────────────
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
 // ─── USER ───────────────────────────────────────
 model User {
   id              String    @id @default(cuid())
@@ -39,20 +65,22 @@ enum Role {
 
 // ─── PRODUCT ─────────────────────────────────────
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  category    Category
-  description String
-  basePrice   Float
-  imageUrl    String?
-  badge       String?
-  materials   String[] // JSON array of hex color strings
-  inStock     Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String     @id @default(cuid())
+  name         String
+  slug         String     @unique
+  category     Category
+  description  String
+  basePrice    Float
+  imageUrl     String?
+  badge        String?
+  materials    String[]   // JSON array of hex color strings
+  inStock      Boolean    @default(true)
+  collectionId String?
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
-  orderItems  OrderItem[]
+  orderItems   OrderItem[]
 
   @@map("products")
 }

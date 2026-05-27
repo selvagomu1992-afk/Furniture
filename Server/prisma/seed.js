@@ -10,6 +10,41 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log('🌱 Seeding Jangid database...');
 
+  // ─── Collections ────────────────────────────
+  const collections = [
+    { name: 'Living Room', slug: 'living-room', description: 'Sofas, armchairs, coffee tables and more for your living space.' },
+    { name: 'Dining',      slug: 'dining',      description: 'Dining tables, sideboards and chairs crafted for shared meals.' },
+    { name: 'Bedroom',     slug: 'bedroom',     description: 'Bed frames, nightstands and dressers for restful spaces.' },
+    { name: 'Office',      slug: 'office',      description: 'Desks, shelving and storage for the home workspace.' },
+  ];
+
+  for (const c of collections) {
+    await prisma.collection.upsert({
+      where:  { slug: c.slug },
+      update: {},
+      create: c,
+    });
+  }
+  console.log(`✅ ${collections.length} collections seeded`);
+
+  // ─── Default Settings ─────────────────────────
+  const defaultSettings = [
+    { key: 'company_name',    value: 'Jangid' },
+    { key: 'company_address', value: '12 Artisan Lane, Burlington, Vermont, VT 05401' },
+    { key: 'company_phone',   value: '+1 (802) 555-0147' },
+    { key: 'company_email',   value: 'studio@jangid.com' },
+    { key: 'delivery_rate',   value: '150' },
+  ];
+
+  for (const s of defaultSettings) {
+    await prisma.setting.upsert({
+      where:  { key: s.key },
+      update: {},
+      create: s,
+    });
+  }
+  console.log(`✅ ${defaultSettings.length} settings seeded`);
+
   // ─── Admin User ──────────────────────────────
   const passwordHash = await bcrypt.hash('Admin@123', 12);
 
