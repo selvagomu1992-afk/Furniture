@@ -79,12 +79,17 @@ app.use((_req, res) => {
 app.use(errorHandler);
 
 // ─── START ──────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🪵  Jangid API running`);
-  console.log(`   ➜ http://localhost:${PORT}`);
-  console.log(`   ➜ Health: http://localhost:${PORT}/health`);
-  console.log(`   ➜ Inngest: http://localhost:${PORT}/api/inngest`);
-  console.log(`   ➜ ENV: ${process.env.NODE_ENV}\n`);
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection:', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1);
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Jangid API running on port ${PORT}`);
+  console.log(`Health: http://0.0.0.0:${PORT}/health`);
 });
 
 export default app;

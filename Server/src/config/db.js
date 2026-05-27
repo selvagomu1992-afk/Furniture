@@ -1,6 +1,8 @@
 // src/config/db.js — Prisma Client with Neon adapter (Prisma 7)
-import { PrismaClient } from '@prisma/client';
-import { PrismaNeon } from '@prisma/adapter-neon';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { PrismaClient } = require('@prisma/client');
+const { PrismaNeon } = require('@prisma/adapter-neon');
 
 const globalForPrisma = globalThis;
 
