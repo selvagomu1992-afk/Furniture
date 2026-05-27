@@ -5,6 +5,7 @@ import cors from 'cors';
 import { serve } from 'inngest/express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 import { inngest }        from './src/inngest/client.js';
 import { inngestFunctions } from './src/inngest/functions.js';
@@ -75,12 +76,17 @@ app.use(
 // ─── SERVE FRONTEND (production) ──────────────────
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const clientDist = path.resolve(__dirname, '..', 'Client', 'dist');
-app.use(express.static(clientDist));
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(clientDist, 'index.html'));
-});
+if (fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api/')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDist, 'index.html'), next);
+  });
+}
 
-// ─── 404 HANDLER (non-GET API fallback) ──────────
+// ─── 404 HANDLER ─────────────────────────────────
 app.use((_req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });
