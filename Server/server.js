@@ -70,9 +70,14 @@ app.use(
   serve({ client: inngest, functions: inngestFunctions })
 );
 
-// ─── 404 HANDLER ────────────────────────────────
-app.use((_req, res) => {
-  res.status(404).json({ success: false, message: 'Route not found' });
+// ─── SERVE FRONTEND (production) ──────────────────
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const clientDist = path.resolve(__dirname, '..', 'Client', 'dist');
+app.use(express.static(clientDist));
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(clientDist, 'index.html'));
 });
 
 // ─── GLOBAL ERROR HANDLER ───────────────────────
