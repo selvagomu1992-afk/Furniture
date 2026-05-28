@@ -8,6 +8,8 @@ import {
   getAddress, updateAddress,
   getEnquiries, markEnquiryRead,
   getPincodes, createPincode, updatePincode, deletePincode,
+  getHeroSlides, createHeroSlide, updateHeroSlide, deleteHeroSlide,
+  getFeaturedTypes, createFeaturedType, updateFeaturedType, deleteFeaturedType,
 } from '../controllers/adminController.js';
 import { protect, adminOnly } from '../middleware/auth.js';
 
@@ -55,5 +57,17 @@ router.get('/pincodes',   protect, adminOnly, getPincodes);
 router.post('/pincodes',  protect, adminOnly, createPincode);
 router.put('/pincodes/:id', protect, adminOnly, updatePincode);
 router.delete('/pincodes/:id', protect, adminOnly, deletePincode);
+
+// Hero Slides
+router.get('/hero-slides',            protect, adminOnly, getHeroSlides);
+router.post('/hero-slides',           protect, adminOnly, createHeroSlide);
+router.put('/hero-slides/:id',        protect, adminOnly, updateHeroSlide);
+router.delete('/hero-slides/:id',     protect, adminOnly, deleteHeroSlide);
+
+// Featured Types
+router.get('/featured-types',         protect, adminOnly, getFeaturedTypes);
+router.post('/featured-types',        protect, adminOnly, createFeaturedType);
+router.put('/featured-types/:id',     protect, adminOnly, updateFeaturedType);
+router.delete('/featured-types/:id',  protect, adminOnly, deleteFeaturedType);
 
 export default router;

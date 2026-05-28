@@ -93,25 +93,21 @@
     </aside>
 
     <main id="app">
-      <!-- Hero Section -->
+    <!-- Hero Section (Dynamic Carousel) -->
       <section id="home" class="hero-section">
-        <div class="hero-image-wrap">
-          <img src="/hero.png" alt="Luxury handcrafted living room furniture by Jangid" class="hero-bg-img" id="hero-bg-img" />
+        <div class="hero-bg" id="hero-bg">
           <div class="hero-overlay"></div>
         </div>
-        <div class="hero-content">
-          <div class="hero-tag reveal-up">Est. 2009 · Artisan Workshop</div>
-          <h1 class="hero-title reveal-up">
-            <span>Furniture</span>
-            <span class="italic">crafted</span>
-            <span>with soul.</span>
-          </h1>
-          <p class="hero-subtitle reveal-up">Every piece tells a story. Handmade to order using sustainably sourced solid woods and premium upholstery — built to be passed down through generations.</p>
+        <div class="hero-content" id="hero-content">
+          <div class="hero-tag reveal-up" id="hero-tag">Est. 2009 · Artisan Workshop</div>
+          <h1 class="hero-title reveal-up" id="hero-title">Loading…</h1>
+          <p class="hero-subtitle reveal-up" id="hero-subtitle"></p>
           <div class="hero-actions reveal-up">
             <a href="#collections" class="btn-primary" id="hero-explore-btn">Explore Collections</a>
             <a href="#order" class="btn-ghost" id="hero-order-btn">Commission a Piece</a>
           </div>
         </div>
+        <div class="hero-dots" id="hero-dots"></div>
         <div class="hero-scroll-hint">
           <span>Scroll</span>
           <div class="scroll-line"></div>
@@ -149,6 +145,21 @@
           <span>15-Year Guarantee</span><span class="sep">·</span>
         </div>
       </div>
+
+      <!-- Featured Types Carousel Section -->
+      <section id="featured" class="featured-section">
+        <div class="section-header reveal-up">
+          <span class="section-tag">Shop by Category</span>
+          <h2 class="section-title">Featured Collections</h2>
+          <p class="section-desc">Explore our most beloved furniture categories — each crafted with the same uncompromising attention to detail.</p>
+        </div>
+        <div class="featured-track-wrap reveal-up">
+          <button class="featured-arrow featured-arrow-prev" id="featured-prev" aria-label="Previous">←</button>
+          <div class="featured-track" id="featured-track"></div>
+          <button class="featured-arrow featured-arrow-next" id="featured-next" aria-label="Next">→</button>
+        </div>
+        <div class="featured-dots" id="featured-dots"></div>
+      </section>
 
       <!-- Collections Section -->
       <section id="collections" class="collections-section">

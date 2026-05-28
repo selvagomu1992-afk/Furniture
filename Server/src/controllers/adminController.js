@@ -418,3 +418,78 @@ export const deletePincode = asyncHandler(async (req, res) => {
   await prisma.pincode.delete({ where: { id: req.params.id } });
   res.json({ success: true });
 });
+
+// ─── HERO SLIDE CRUD ───────────────────────────────
+export const getHeroSlides = asyncHandler(async (_req, res) => {
+  const slides = await prisma.heroSlide.findMany({ orderBy: { order: 'asc' } });
+  res.json({ success: true, slides });
+});
+
+export const createHeroSlide = asyncHandler(async (req, res) => {
+  const { imageUrl, title, subtitle, link, order } = req.body;
+  if (!imageUrl) return res.status(400).json({ success: false, message: 'Image URL required' });
+  const slide = await prisma.heroSlide.create({
+    data: { imageUrl, title, subtitle, link, order: parseInt(order) || 0 },
+  });
+  res.status(201).json({ success: true, slide });
+});
+
+export const updateHeroSlide = asyncHandler(async (req, res) => {
+  const { imageUrl, title, subtitle, link, order, active } = req.body;
+  const slide = await prisma.heroSlide.update({
+    where: { id: req.params.id },
+    data: { imageUrl, title, subtitle, link, order: parseInt(order), active },
+  });
+  res.json({ success: true, slide });
+});
+
+export const deleteHeroSlide = asyncHandler(async (req, res) => {
+  await prisma.heroSlide.delete({ where: { id: req.params.id } });
+  res.json({ success: true });
+});
+
+// ─── FEATURED TYPE CRUD ────────────────────────────
+export const getFeaturedTypes = asyncHandler(async (_req, res) => {
+  const types = await prisma.featuredType.findMany({ orderBy: { order: 'asc' } });
+  res.json({ success: true, types });
+});
+
+export const createFeaturedType = asyncHandler(async (req, res) => {
+  const { name, description, imageUrl, order } = req.body;
+  if (!name) return res.status(400).json({ success: false, message: 'Name required' });
+  const ft = await prisma.featuredType.create({
+    data: { name, description, imageUrl, order: parseInt(order) || 0 },
+  });
+  res.status(201).json({ success: true, type: ft });
+});
+
+export const updateFeaturedType = asyncHandler(async (req, res) => {
+  const { name, description, imageUrl, order, active } = req.body;
+  const ft = await prisma.featuredType.update({
+    where: { id: req.params.id },
+    data: { name, description, imageUrl, order: parseInt(order), active },
+  });
+  res.json({ success: true, type: ft });
+});
+
+export const deleteFeaturedType = asyncHandler(async (req, res) => {
+  await prisma.featuredType.delete({ where: { id: req.params.id } });
+  res.json({ success: true });
+});
+
+// ─── PUBLIC ENDPOINTS ──────────────────────────────
+export const getActiveHeroSlides = asyncHandler(async (_req, res) => {
+  const slides = await prisma.heroSlide.findMany({
+    where: { active: true },
+    orderBy: { order: 'asc' },
+  });
+  res.json({ success: true, slides });
+});
+
+export const getActiveFeaturedTypes = asyncHandler(async (_req, res) => {
+  const types = await prisma.featuredType.findMany({
+    where: { active: true },
+    orderBy: { order: 'asc' },
+  });
+  res.json({ success: true, types });
+});

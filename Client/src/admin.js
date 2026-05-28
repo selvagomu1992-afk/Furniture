@@ -1194,6 +1194,228 @@ window.markRead = async (id) => {
 
 document.getElementById('enquiry-filter')?.addEventListener('change', loadEnquiries);
 
+// ─── Hero Slides ────────────────────────────────
+let heroEditId = null;
+
+async function loadHeroSlides() {
+  try {
+    const data = await api('/hero-slides');
+    const container = document.getElementById('hero-slides-container');
+    if (!data.slides || data.slides.length === 0) {
+      container.innerHTML = '<p class="muted">No hero slides yet. Click "+ Add Slide" to add one.</p>';
+      return;
+    }
+    container.innerHTML = data.slides.map((s, i) => `
+      <div class="pincode-card" style="margin-bottom:0.5rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <img src="${s.imageUrl}" alt="${s.title || ''}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />
+          <div>
+            <strong>${s.title || 'Untitled'}</strong>
+            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${s.order} · ${s.active ? 'Active' : 'Inactive'}</span>
+          </div>
+        </div>
+        <div class="pincode-card-right">
+          <button class="btn-secondary btn-table" onclick="editHeroSlide('${s.id}')">Edit</button>
+          <button class="btn-danger btn-table" onclick="deleteHeroSlide('${s.id}')">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) { showToast('Hero: ' + e.message); }
+}
+
+window.deleteHeroSlide = async (id) => {
+  if (!confirm('Delete this slide?')) return;
+  try { await api(`/hero-slides/${id}`, { method: 'DELETE' }); showToast('Deleted'); loadHeroSlides(); }
+  catch (e) { showToast(e.message); }
+};
+
+function heroFormHtml(s) {
+  return `
+    <div style="margin-bottom:1rem;">
+      <div class="image-upload">
+        <div class="image-upload-preview">
+          ${s?.imageUrl ? `<img src="${s.imageUrl}" id="hero-preview" />` : '<span class="upload-placeholder" id="hero-preview">No image</span>'}
+        </div>
+        <div class="image-upload-actions">
+          <button class="upload-btn-custom" onclick="uploadHeroImage()">Upload Image</button>
+          <span class="upload-status" id="hero-upload-status"></span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group"><label>Title</label><input type="text" id="hero-title" class="form-input" value="${s?.title || ''}" /></div>
+    <div class="form-group"><label>Subtitle</label><input type="text" id="hero-subtitle" class="form-input" value="${s?.subtitle || ''}" /></div>
+    <div class="form-group"><label>Link (optional)</label><input type="text" id="hero-link" class="form-input" value="${s?.link || ''}" placeholder="#order" /></div>
+    <div class="form-group"><label>Order</label><input type="number" id="hero-order" class="form-input" value="${s?.order ?? 0}" min="0" /></div>
+    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;">
+      <input type="checkbox" id="hero-active" ${s?.active !== false ? 'checked' : ''} /> Active
+    </label>
+    <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+      <button class="btn-primary" id="hero-save-btn">${s ? 'Update' : 'Add'}</button>
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  `;
+}
+
+window.uploadHeroImage = () => {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = async () => {
+    const file = input.files[0]; if (!file) return;
+    document.getElementById('hero-upload-status').textContent = 'Uploading…';
+    try {
+      const fd = new FormData(); fd.append('image', file);
+      const res = await fetch(`${API_BASE}/api/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}` }, body: fd });
+      const d = await res.json();
+      if (d.url) { document.getElementById('hero-preview').outerHTML = `<img src="${d.url}" id="hero-preview" style="width:100%;height:100%;object-fit:cover;" />`; document.getElementById('hero-upload-status').textContent = 'Uploaded ✓'; }
+      else { document.getElementById('hero-upload-status').textContent = 'Upload failed'; }
+    } catch (e) { document.getElementById('hero-upload-status').textContent = 'Error'; }
+  };
+  input.click();
+};
+
+document.getElementById('add-hero-btn').addEventListener('click', () => {
+  heroEditId = null;
+  openModal('New Hero Slide', heroFormHtml(null));
+  document.getElementById('hero-save-btn').addEventListener('click', saveHeroSlide);
+});
+
+window.editHeroSlide = (id) => {
+  heroEditId = id;
+  openModal('Edit Hero Slide', '<p class="muted" style="margin-bottom:0.75rem;">Loading…</p>');
+  api(`/hero-slides`).then(d => {
+    const s = d.slides.find(x => x.id === id);
+    if (!s) { closeModal(); showToast('Slide not found'); return; }
+    document.getElementById('modal-body').innerHTML = heroFormHtml(s);
+    document.getElementById('hero-save-btn').addEventListener('click', saveHeroSlide);
+  }).catch(e => { showToast(e.message); closeModal(); });
+};
+
+async function saveHeroSlide() {
+  const imageUrl = document.getElementById('hero-preview')?.getAttribute('src') || '';
+  const title = document.getElementById('hero-title').value.trim();
+  const subtitle = document.getElementById('hero-subtitle').value.trim();
+  const link = document.getElementById('hero-link').value.trim();
+  const order = parseInt(document.getElementById('hero-order').value) || 0;
+  const active = document.getElementById('hero-active').checked;
+  if (!imageUrl || imageUrl === 'No image') { showToast('Please upload an image'); return; }
+  try {
+    const body = JSON.stringify({ imageUrl, title, subtitle, link, order, active });
+    if (heroEditId) { await api(`/hero-slides/${heroEditId}`, { method: 'PUT', body }); showToast('Slide updated'); }
+    else { await api('/hero-slides', { method: 'POST', body }); showToast('Slide added'); }
+    closeModal(); loadHeroSlides();
+  } catch (e) { showToast(e.message); }
+}
+
+// ─── Featured Types (Carousel) ───────────────────
+let featuredEditId = null;
+
+async function loadFeaturedTypes() {
+  try {
+    const data = await api('/featured-types');
+    const container = document.getElementById('featured-types-container');
+    if (!data.types || data.types.length === 0) {
+      container.innerHTML = '<p class="muted">No featured types yet. Click "+ Add Type" to add one.</p>';
+      return;
+    }
+    container.innerHTML = data.types.map(t => `
+      <div class="pincode-card" style="margin-bottom:0.5rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          ${t.imageUrl ? `<img src="${t.imageUrl}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />` : '<div style="width:60px;height:40px;border-radius:4px;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--walnut-light);">No img</div>'}
+          <div>
+            <strong>${t.name}</strong>
+            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${t.order} · ${t.active ? 'Active' : 'Inactive'}</span>
+          </div>
+        </div>
+        <div class="pincode-card-right">
+          <button class="btn-secondary btn-table" onclick="editFeaturedType('${t.id}')">Edit</button>
+          <button class="btn-danger btn-table" onclick="deleteFeaturedType('${t.id}')">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) { showToast('Carousel: ' + e.message); }
+}
+
+window.deleteFeaturedType = async (id) => {
+  if (!confirm('Delete this type?')) return;
+  try { await api(`/featured-types/${id}`, { method: 'DELETE' }); showToast('Deleted'); loadFeaturedTypes(); }
+  catch (e) { showToast(e.message); }
+};
+
+function featuredFormHtml(t) {
+  return `
+    <div style="margin-bottom:1rem;">
+      <div class="image-upload">
+        <div class="image-upload-preview">
+          ${t?.imageUrl ? `<img src="${t.imageUrl}" id="ft-preview" />` : '<span class="upload-placeholder" id="ft-preview">No image</span>'}
+        </div>
+        <div class="image-upload-actions">
+          <button class="upload-btn-custom" onclick="uploadFtImage()">Upload Image</button>
+          <span class="upload-status" id="ft-upload-status"></span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group"><label>Name</label><input type="text" id="ft-name" class="form-input" value="${t?.name || ''}" /></div>
+    <div class="form-group"><label>Description</label><input type="text" id="ft-desc" class="form-input" value="${t?.description || ''}" /></div>
+    <div class="form-group"><label>Order</label><input type="number" id="ft-order" class="form-input" value="${t?.order ?? 0}" min="0" /></div>
+    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;">
+      <input type="checkbox" id="ft-active" ${t?.active !== false ? 'checked' : ''} /> Active
+    </label>
+    <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+      <button class="btn-primary" id="ft-save-btn">${t ? 'Update' : 'Add'}</button>
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  `;
+}
+
+window.uploadFtImage = () => {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = async () => {
+    const file = input.files[0]; if (!file) return;
+    document.getElementById('ft-upload-status').textContent = 'Uploading…';
+    try {
+      const fd = new FormData(); fd.append('image', file);
+      const res = await fetch(`${API_BASE}/api/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}` }, body: fd });
+      const d = await res.json();
+      if (d.url) { document.getElementById('ft-preview').outerHTML = `<img src="${d.url}" id="ft-preview" style="width:100%;height:100%;object-fit:cover;" />`; document.getElementById('ft-upload-status').textContent = 'Uploaded ✓'; }
+      else { document.getElementById('ft-upload-status').textContent = 'Upload failed'; }
+    } catch (e) { document.getElementById('ft-upload-status').textContent = 'Error'; }
+  };
+  input.click();
+};
+
+document.getElementById('add-featured-btn').addEventListener('click', () => {
+  featuredEditId = null;
+  openModal('New Featured Type', featuredFormHtml(null));
+  document.getElementById('ft-save-btn').addEventListener('click', saveFeaturedType);
+});
+
+window.editFeaturedType = (id) => {
+  featuredEditId = id;
+  openModal('Edit Featured Type', '<p class="muted" style="margin-bottom:0.75rem;">Loading…</p>');
+  api(`/featured-types`).then(d => {
+    const t = d.types.find(x => x.id === id);
+    if (!t) { closeModal(); showToast('Not found'); return; }
+    document.getElementById('modal-body').innerHTML = featuredFormHtml(t);
+    document.getElementById('ft-save-btn').addEventListener('click', saveFeaturedType);
+  }).catch(e => { showToast(e.message); closeModal(); });
+};
+
+async function saveFeaturedType() {
+  const imageUrl = document.getElementById('ft-preview')?.getAttribute('src') || '';
+  const name = document.getElementById('ft-name').value.trim();
+  const description = document.getElementById('ft-desc').value.trim();
+  const order = parseInt(document.getElementById('ft-order').value) || 0;
+  const active = document.getElementById('ft-active').checked;
+  if (!name) { showToast('Name is required'); return; }
+  try {
+    const body = JSON.stringify({ name, description, imageUrl, order, active });
+    if (featuredEditId) { await api(`/featured-types/${featuredEditId}`, { method: 'PUT', body }); showToast('Updated'); }
+    else { await api('/featured-types', { method: 'POST', body }); showToast('Added'); }
+    closeModal(); loadFeaturedTypes();
+  } catch (e) { showToast(e.message); }
+}
+
 // ─── Pincodes ───────────────────────────────────
 let pincodeEditId = null;
 
@@ -1289,4 +1511,6 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAddress();
   loadEnquiries();
   loadPincodes();
+  loadHeroSlides();
+  loadFeaturedTypes();
 });

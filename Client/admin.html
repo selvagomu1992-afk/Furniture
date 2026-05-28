@@ -72,6 +72,14 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
           Pincodes
         </button>
+        <button class="nav-item" data-section="hero">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M21 9l-5-5M3 9l5-5M3 15l5 5M21 15l-5 5"/></svg>
+          Hero
+        </button>
+        <button class="nav-item" data-section="carousel">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Carousel
+        </button>
       </nav>
       <div class="sidebar-footer">
         <button class="nav-item" id="back-to-site">
@@ -254,6 +262,26 @@
           <button class="btn-primary" id="pincode-add-btn">+ Add Pincode</button>
         </div>
         <div class="pincode-cards" id="pincodes-container"></div>
+      </section>
+
+      <!-- Hero Slides -->
+      <section class="admin-section" id="section-hero">
+        <div class="section-top"><h1>Hero Slides</h1></div>
+        <div class="panel" style="margin-bottom:1rem;">
+          <p class="muted" style="margin-bottom:0.5rem;">Add hero banner images that appear on the homepage carousel. Upload via the image widget below.</p>
+          <div id="hero-slides-container"></div>
+        </div>
+        <button class="btn-primary" id="add-hero-btn">+ Add Slide</button>
+      </section>
+
+      <!-- Featured Types (Carousel) -->
+      <section class="admin-section" id="section-carousel">
+        <div class="section-top"><h1>Featured Types Carousel</h1></div>
+        <div class="panel" style="margin-bottom:1rem;">
+          <p class="muted" style="margin-bottom:0.5rem;">Manage up to 5 featured type cards shown on the homepage carousel.</p>
+          <div id="featured-types-container"></div>
+        </div>
+        <button class="btn-primary" id="add-featured-btn">+ Add Type</button>
       </section>
 
     </main>

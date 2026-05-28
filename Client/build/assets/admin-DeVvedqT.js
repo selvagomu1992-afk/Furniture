@@ -12,7 +12,7 @@ import{t as e}from"./config-DDSCtEQs.js";var t=`${e}/api/admin`;function n(){ret
         <input type="hidden" id="${t}-url" value="${e||``}" />
       </div>
     </div>
-  `}function c(t){let r=document.getElementById(`${t}-file`);r&&r.addEventListener(`change`,async()=>{let a=r.files[0];if(!a)return;let o=document.getElementById(`${t}-status`),s=document.getElementById(`${t}-preview`),c=document.getElementById(`${t}-url`);o.textContent=`Uploading...`;let l=new FormData;l.append(`image`,a);try{let t=await(await fetch(`${e}/api/upload`,{method:`POST`,headers:{Authorization:`Bearer ${n()}`},body:l})).json();if(!t.success)throw Error(t.message||`Upload failed`);c.value=t.url,s.innerHTML=`<img src="${t.url}" alt="Preview" />`,o.textContent=``}catch(e){o.textContent=`Upload failed`,i(`Upload: ${e.message}`)}})}document.getElementById(`modal-close`).addEventListener(`click`,o),document.getElementById(`modal-overlay`).addEventListener(`click`,o),(function(){let e=localStorage.getItem(`user`),t=n();if(!e||!t){window.location.href=`/login.html`;return}try{let t=JSON.parse(e);if(t.role!==`ADMIN`){window.location.href=`/index.html`;return}document.querySelector(`.admin-badge`).textContent=t.firstName}catch{window.location.href=`/login.html`}})();function l(){document.getElementById(`sidebar`)?.classList.remove(`open`),document.getElementById(`sidebar-overlay`)?.classList.remove(`open`),document.getElementById(`mobile-hamburger`)?.classList.remove(`open`)}document.getElementById(`mobile-hamburger`)?.addEventListener(`click`,()=>{document.getElementById(`sidebar`)?.classList.toggle(`open`),document.getElementById(`sidebar-overlay`)?.classList.toggle(`open`),document.getElementById(`mobile-hamburger`)?.classList.toggle(`open`)}),document.getElementById(`sidebar-overlay`)?.addEventListener(`click`,l),document.querySelectorAll(`.nav-item[data-section]`).forEach(e=>{e.addEventListener(`click`,()=>{document.querySelectorAll(`.nav-item[data-section]`).forEach(e=>e.classList.remove(`active`)),document.querySelectorAll(`.admin-section`).forEach(e=>e.classList.remove(`active`)),e.classList.add(`active`);let t=document.getElementById(`section-${e.dataset.section}`);t&&t.classList.add(`active`),e.dataset.section===`counterbill`&&T(),l()})}),document.getElementById(`back-to-site`).addEventListener(`click`,()=>window.location.href=`/index.html`),document.getElementById(`signout-btn`).addEventListener(`click`,()=>{localStorage.removeItem(`token`),localStorage.removeItem(`user`),window.location.href=`/login.html`});async function u(e,n={}){let i=await(await fetch(`${t}${e}`,{...n,headers:{...r(),...n.headers}})).json();if(!i.success)throw Error(i.message||`Request failed`);return i}async function d(){try{let e=await u(`/dashboard`);document.getElementById(`stat-users`).textContent=e.stats.totalUsers,document.getElementById(`stat-products`).textContent=e.stats.totalProducts,document.getElementById(`stat-orders`).textContent=e.stats.totalOrders,document.getElementById(`stat-collections`).textContent=e.stats.totalCollections,document.getElementById(`stat-revenue`).textContent=`$${(e.stats.totalRevenue||0).toLocaleString()}`,document.getElementById(`stat-messages`).textContent=e.stats.totalContactMessages;let t=document.getElementById(`orders-by-status`);e.ordersByStatus?.length?t.innerHTML=`<div class="status-bar">${e.ordersByStatus.map(e=>`<span class="status-item ${e.status}">${e.status}: ${e.count}</span>`).join(``)}</div>`:t.innerHTML=`<p class="muted">No orders yet</p>`}catch(e){i(`Dashboard: ${e.message}`)}}async function f(){try{let e=await u(`/collections`),t=document.getElementById(`collections-tbody`);t.innerHTML=e.collections.map(e=>`
+  `}function c(t){let r=document.getElementById(`${t}-file`);r&&r.addEventListener(`change`,async()=>{let a=r.files[0];if(!a)return;let o=document.getElementById(`${t}-status`),s=document.getElementById(`${t}-preview`),c=document.getElementById(`${t}-url`);o.textContent=`Uploading...`;let l=new FormData;l.append(`image`,a);try{let t=await(await fetch(`${e}/api/upload`,{method:`POST`,headers:{Authorization:`Bearer ${n()}`},body:l})).json();if(!t.success)throw Error(t.message||`Upload failed`);c.value=t.url,s.innerHTML=`<img src="${t.url}" alt="Preview" />`,o.textContent=``}catch(e){o.textContent=`Upload failed`,i(`Upload: ${e.message}`)}})}document.getElementById(`modal-close`).addEventListener(`click`,o),document.getElementById(`modal-overlay`).addEventListener(`click`,o),(function(){let e=localStorage.getItem(`user`),t=n();if(!e||!t){window.location.href=`/login.html`;return}try{if(JSON.parse(e).role!==`ADMIN`){window.location.href=`/index.html`;return}}catch{window.location.href=`/login.html`}})();function l(){document.getElementById(`sidebar`)?.classList.remove(`open`),document.getElementById(`sidebar-overlay`)?.classList.remove(`open`),document.getElementById(`mobile-hamburger`)?.classList.remove(`open`)}document.getElementById(`mobile-hamburger`)?.addEventListener(`click`,()=>{document.getElementById(`sidebar`)?.classList.toggle(`open`),document.getElementById(`sidebar-overlay`)?.classList.toggle(`open`),document.getElementById(`mobile-hamburger`)?.classList.toggle(`open`)}),document.getElementById(`sidebar-overlay`)?.addEventListener(`click`,l),document.querySelectorAll(`.nav-item[data-section]`).forEach(e=>{e.addEventListener(`click`,()=>{document.querySelectorAll(`.nav-item[data-section]`).forEach(e=>e.classList.remove(`active`)),document.querySelectorAll(`.admin-section`).forEach(e=>e.classList.remove(`active`)),e.classList.add(`active`);let t=document.getElementById(`section-${e.dataset.section}`);t&&t.classList.add(`active`),e.dataset.section===`counterbill`&&T(),l()})}),document.getElementById(`back-to-site`).addEventListener(`click`,()=>window.location.href=`/index.html`),document.getElementById(`signout-btn`).addEventListener(`click`,()=>{localStorage.removeItem(`token`),localStorage.removeItem(`user`),window.location.href=`/login.html`});async function u(e,n={}){let i=await(await fetch(`${t}${e}`,{...n,headers:{...r(),...n.headers}})).json();if(!i.success)throw Error(i.message||`Request failed`);return i}async function d(){try{let e=await u(`/dashboard`);document.getElementById(`stat-users`).textContent=e.stats.totalUsers,document.getElementById(`stat-products`).textContent=e.stats.totalProducts,document.getElementById(`stat-orders`).textContent=e.stats.totalOrders,document.getElementById(`stat-collections`).textContent=e.stats.totalCollections,document.getElementById(`stat-revenue`).textContent=`$${(e.stats.totalRevenue||0).toLocaleString()}`,document.getElementById(`stat-messages`).textContent=e.stats.totalContactMessages;let t=document.getElementById(`orders-by-status`);e.ordersByStatus?.length?t.innerHTML=`<div class="status-bar">${e.ordersByStatus.map(e=>`<span class="status-item ${e.status}">${e.status}: ${e.count}</span>`).join(``)}</div>`:t.innerHTML=`<p class="muted">No orders yet</p>`}catch(e){i(`Dashboard: ${e.message}`)}}async function f(){try{let e=await u(`/collections`),t=document.getElementById(`collections-tbody`);t.innerHTML=e.collections.map(e=>`
       <tr>
         <td><strong>${e.name}</strong></td>
         <td>${e.slug}</td>
@@ -90,7 +90,7 @@ import{t as e}from"./config-DDSCtEQs.js";var t=`${e}/api/admin`;function n(){ret
           <div class="action-group">
             <button class="btn-secondary" onclick="viewOrder('${e.id}')">View</button>
             <button class="btn-secondary" onclick="updateStatus('${e.id}')">Status</button>
-            <button class="btn-primary" onclick="printInvoice('${e.id}')" style="font-size:0.7rem;padding:0.4rem 0.8rem;">Invoice</button>
+            <button class="btn-primary order-invoice-btn" onclick="printInvoice('${e.id}')" style="font-size:0.7rem;padding:0.4rem 0.8rem;">Invoice</button>
           </div>
         </td>
       </tr>
@@ -510,7 +510,80 @@ import{t as e}from"./config-DDSCtEQs.js";var t=`${e}/api/admin`;function n(){ret
           </div>
         `}
       </div>
-    `),!n.read)try{await u(`/enquiries/${e}/read`,{method:`PATCH`}),A()}catch{}}catch(e){i(e.message)}},window.markRead=async e=>{try{await u(`/enquiries/${e}/read`,{method:`PATCH`}),i(`Marked as read`),o(),A()}catch(e){i(e.message)}},document.getElementById(`enquiry-filter`)?.addEventListener(`change`,A);var j=null;async function M(){try{let e=await u(`/pincodes`),t=document.getElementById(`pincodes-container`);if(!e.pincodes||e.pincodes.length===0){t.innerHTML=`<div class="pincode-empty">No pincodes added yet. Click "+ Add Pincode" to begin.</div>`;return}t.innerHTML=e.pincodes.map(e=>`
+    `),!n.read)try{await u(`/enquiries/${e}/read`,{method:`PATCH`}),A()}catch{}}catch(e){i(e.message)}},window.markRead=async e=>{try{await u(`/enquiries/${e}/read`,{method:`PATCH`}),i(`Marked as read`),o(),A()}catch(e){i(e.message)}},document.getElementById(`enquiry-filter`)?.addEventListener(`change`,A);var j=null;async function M(){try{let e=await u(`/hero-slides`),t=document.getElementById(`hero-slides-container`);if(!e.slides||e.slides.length===0){t.innerHTML=`<p class="muted">No hero slides yet. Click "+ Add Slide" to add one.</p>`;return}t.innerHTML=e.slides.map((e,t)=>`
+      <div class="pincode-card" style="margin-bottom:0.5rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <img src="${e.imageUrl}" alt="${e.title||``}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />
+          <div>
+            <strong>${e.title||`Untitled`}</strong>
+            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${e.order} · ${e.active?`Active`:`Inactive`}</span>
+          </div>
+        </div>
+        <div class="pincode-card-right">
+          <button class="btn-secondary btn-table" onclick="editHeroSlide('${e.id}')">Edit</button>
+          <button class="btn-danger btn-table" onclick="deleteHeroSlide('${e.id}')">Delete</button>
+        </div>
+      </div>
+    `).join(``)}catch(e){i(`Hero: `+e.message)}}window.deleteHeroSlide=async e=>{if(confirm(`Delete this slide?`))try{await u(`/hero-slides/${e}`,{method:`DELETE`}),i(`Deleted`),M()}catch(e){i(e.message)}};function N(e){return`
+    <div style="margin-bottom:1rem;">
+      <div class="image-upload">
+        <div class="image-upload-preview">
+          ${e?.imageUrl?`<img src="${e.imageUrl}" id="hero-preview" />`:`<span class="upload-placeholder" id="hero-preview">No image</span>`}
+        </div>
+        <div class="image-upload-actions">
+          <button class="upload-btn-custom" onclick="uploadHeroImage()">Upload Image</button>
+          <span class="upload-status" id="hero-upload-status"></span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group"><label>Title</label><input type="text" id="hero-title" class="form-input" value="${e?.title||``}" /></div>
+    <div class="form-group"><label>Subtitle</label><input type="text" id="hero-subtitle" class="form-input" value="${e?.subtitle||``}" /></div>
+    <div class="form-group"><label>Link (optional)</label><input type="text" id="hero-link" class="form-input" value="${e?.link||``}" placeholder="#order" /></div>
+    <div class="form-group"><label>Order</label><input type="number" id="hero-order" class="form-input" value="${e?.order??0}" min="0" /></div>
+    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;">
+      <input type="checkbox" id="hero-active" ${e?.active===!1?``:`checked`} /> Active
+    </label>
+    <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+      <button class="btn-primary" id="hero-save-btn">${e?`Update`:`Add`}</button>
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  `}window.uploadHeroImage=()=>{let t=document.createElement(`input`);t.type=`file`,t.accept=`image/*`,t.onchange=async()=>{let r=t.files[0];if(r){document.getElementById(`hero-upload-status`).textContent=`Uploading…`;try{let t=new FormData;t.append(`image`,r);let i=await(await fetch(`${e}/api/upload`,{method:`POST`,headers:{Authorization:`Bearer ${n()}`},body:t})).json();i.url?(document.getElementById(`hero-preview`).outerHTML=`<img src="${i.url}" id="hero-preview" style="width:100%;height:100%;object-fit:cover;" />`,document.getElementById(`hero-upload-status`).textContent=`Uploaded ✓`):document.getElementById(`hero-upload-status`).textContent=`Upload failed`}catch{document.getElementById(`hero-upload-status`).textContent=`Error`}}},t.click()},document.getElementById(`add-hero-btn`).addEventListener(`click`,()=>{j=null,a(`New Hero Slide`,N(null)),document.getElementById(`hero-save-btn`).addEventListener(`click`,P)}),window.editHeroSlide=e=>{j=e,a(`Edit Hero Slide`,`<p class="muted" style="margin-bottom:0.75rem;">Loading…</p>`),u(`/hero-slides`).then(t=>{let n=t.slides.find(t=>t.id===e);if(!n){o(),i(`Slide not found`);return}document.getElementById(`modal-body`).innerHTML=N(n),document.getElementById(`hero-save-btn`).addEventListener(`click`,P)}).catch(e=>{i(e.message),o()})};async function P(){let e=document.getElementById(`hero-preview`)?.getAttribute(`src`)||``,t=document.getElementById(`hero-title`).value.trim(),n=document.getElementById(`hero-subtitle`).value.trim(),r=document.getElementById(`hero-link`).value.trim(),a=parseInt(document.getElementById(`hero-order`).value)||0,s=document.getElementById(`hero-active`).checked;if(!e||e===`No image`){i(`Please upload an image`);return}try{let c=JSON.stringify({imageUrl:e,title:t,subtitle:n,link:r,order:a,active:s});j?(await u(`/hero-slides/${j}`,{method:`PUT`,body:c}),i(`Slide updated`)):(await u(`/hero-slides`,{method:`POST`,body:c}),i(`Slide added`)),o(),M()}catch(e){i(e.message)}}var F=null;async function I(){try{let e=await u(`/featured-types`),t=document.getElementById(`featured-types-container`);if(!e.types||e.types.length===0){t.innerHTML=`<p class="muted">No featured types yet. Click "+ Add Type" to add one.</p>`;return}t.innerHTML=e.types.map(e=>`
+      <div class="pincode-card" style="margin-bottom:0.5rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          ${e.imageUrl?`<img src="${e.imageUrl}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />`:`<div style="width:60px;height:40px;border-radius:4px;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--walnut-light);">No img</div>`}
+          <div>
+            <strong>${e.name}</strong>
+            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${e.order} · ${e.active?`Active`:`Inactive`}</span>
+          </div>
+        </div>
+        <div class="pincode-card-right">
+          <button class="btn-secondary btn-table" onclick="editFeaturedType('${e.id}')">Edit</button>
+          <button class="btn-danger btn-table" onclick="deleteFeaturedType('${e.id}')">Delete</button>
+        </div>
+      </div>
+    `).join(``)}catch(e){i(`Carousel: `+e.message)}}window.deleteFeaturedType=async e=>{if(confirm(`Delete this type?`))try{await u(`/featured-types/${e}`,{method:`DELETE`}),i(`Deleted`),I()}catch(e){i(e.message)}};function L(e){return`
+    <div style="margin-bottom:1rem;">
+      <div class="image-upload">
+        <div class="image-upload-preview">
+          ${e?.imageUrl?`<img src="${e.imageUrl}" id="ft-preview" />`:`<span class="upload-placeholder" id="ft-preview">No image</span>`}
+        </div>
+        <div class="image-upload-actions">
+          <button class="upload-btn-custom" onclick="uploadFtImage()">Upload Image</button>
+          <span class="upload-status" id="ft-upload-status"></span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group"><label>Name</label><input type="text" id="ft-name" class="form-input" value="${e?.name||``}" /></div>
+    <div class="form-group"><label>Description</label><input type="text" id="ft-desc" class="form-input" value="${e?.description||``}" /></div>
+    <div class="form-group"><label>Order</label><input type="number" id="ft-order" class="form-input" value="${e?.order??0}" min="0" /></div>
+    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;">
+      <input type="checkbox" id="ft-active" ${e?.active===!1?``:`checked`} /> Active
+    </label>
+    <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+      <button class="btn-primary" id="ft-save-btn">${e?`Update`:`Add`}</button>
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  `}window.uploadFtImage=()=>{let t=document.createElement(`input`);t.type=`file`,t.accept=`image/*`,t.onchange=async()=>{let r=t.files[0];if(r){document.getElementById(`ft-upload-status`).textContent=`Uploading…`;try{let t=new FormData;t.append(`image`,r);let i=await(await fetch(`${e}/api/upload`,{method:`POST`,headers:{Authorization:`Bearer ${n()}`},body:t})).json();i.url?(document.getElementById(`ft-preview`).outerHTML=`<img src="${i.url}" id="ft-preview" style="width:100%;height:100%;object-fit:cover;" />`,document.getElementById(`ft-upload-status`).textContent=`Uploaded ✓`):document.getElementById(`ft-upload-status`).textContent=`Upload failed`}catch{document.getElementById(`ft-upload-status`).textContent=`Error`}}},t.click()},document.getElementById(`add-featured-btn`).addEventListener(`click`,()=>{F=null,a(`New Featured Type`,L(null)),document.getElementById(`ft-save-btn`).addEventListener(`click`,R)}),window.editFeaturedType=e=>{F=e,a(`Edit Featured Type`,`<p class="muted" style="margin-bottom:0.75rem;">Loading…</p>`),u(`/featured-types`).then(t=>{let n=t.types.find(t=>t.id===e);if(!n){o(),i(`Not found`);return}document.getElementById(`modal-body`).innerHTML=L(n),document.getElementById(`ft-save-btn`).addEventListener(`click`,R)}).catch(e=>{i(e.message),o()})};async function R(){let e=document.getElementById(`ft-preview`)?.getAttribute(`src`)||``,t=document.getElementById(`ft-name`).value.trim(),n=document.getElementById(`ft-desc`).value.trim(),r=parseInt(document.getElementById(`ft-order`).value)||0,a=document.getElementById(`ft-active`).checked;if(!t){i(`Name is required`);return}try{let s=JSON.stringify({name:t,description:n,imageUrl:e,order:r,active:a});F?(await u(`/featured-types/${F}`,{method:`PUT`,body:s}),i(`Updated`)):(await u(`/featured-types`,{method:`POST`,body:s}),i(`Added`)),o(),I()}catch(e){i(e.message)}}var z=null;async function B(){try{let e=await u(`/pincodes`),t=document.getElementById(`pincodes-container`);if(!e.pincodes||e.pincodes.length===0){t.innerHTML=`<div class="pincode-empty">No pincodes added yet. Click "+ Add Pincode" to begin.</div>`;return}t.innerHTML=e.pincodes.map(e=>`
       <div class="pincode-card">
         <div class="pincode-card-left">
           <span class="pincode-code">${e.pincode}</span>
@@ -525,7 +598,7 @@ import{t as e}from"./config-DDSCtEQs.js";var t=`${e}/api/admin`;function n(){ret
           <button class="btn-danger btn-table" onclick="deletePincode('${e.id}')">Delete</button>
         </div>
       </div>
-    `).join(``)}catch(e){i(`Pincodes: `+e.message)}}window.deletePincode=async e=>{if(confirm(`Delete this pincode?`))try{await u(`/pincodes/${e}`,{method:`DELETE`}),i(`Pincode deleted`),M()}catch(e){i(e.message)}},document.getElementById(`pincode-add-btn`).addEventListener(`click`,()=>{j=null,a(`Add Pincode`,`
+    `).join(``)}catch(e){i(`Pincodes: `+e.message)}}window.deletePincode=async e=>{if(confirm(`Delete this pincode?`))try{await u(`/pincodes/${e}`,{method:`DELETE`}),i(`Pincode deleted`),B()}catch(e){i(e.message)}},document.getElementById(`pincode-add-btn`).addEventListener(`click`,()=>{z=null,a(`Add Pincode`,`
     <div class="form-group"><label>Pincode</label><input type="text" id="pin-code" class="form-input" maxlength="10" /></div>
     <div class="form-group"><label>Area Name</label><input type="text" id="pin-area" class="form-input" /></div>
     <div class="form-group"><label>Delivery Charge ($)</label><input type="number" id="pin-charge" class="form-input" step="0.01" min="0" /></div>
@@ -533,7 +606,7 @@ import{t as e}from"./config-DDSCtEQs.js";var t=`${e}/api/admin`;function n(){ret
       <button class="btn-primary" id="pin-save">Save</button>
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
     </div>
-  `),document.getElementById(`pin-save`).addEventListener(`click`,N)}),window.editPincode=(e,t,n,r)=>{j=e,a(`Edit Pincode`,`
+  `),document.getElementById(`pin-save`).addEventListener(`click`,V)}),window.editPincode=(e,t,n,r)=>{z=e,a(`Edit Pincode`,`
     <div class="form-group"><label>Pincode</label><input type="text" id="pin-code" class="form-input" value="${t}" readonly style="background:var(--cream-mid);cursor:not-allowed;" /></div>
     <div class="form-group"><label>Area Name</label><input type="text" id="pin-area" class="form-input" value="${n}" /></div>
     <div class="form-group"><label>Delivery Charge ($)</label><input type="number" id="pin-charge" class="form-input" step="0.01" min="0" value="${r}" /></div>
@@ -541,4 +614,4 @@ import{t as e}from"./config-DDSCtEQs.js";var t=`${e}/api/admin`;function n(){ret
       <button class="btn-primary" id="pin-save">Update</button>
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
     </div>
-  `),document.getElementById(`pin-save`).addEventListener(`click`,N)};async function N(){let e=document.getElementById(`pin-code`).value.trim(),t=document.getElementById(`pin-area`).value.trim(),n=parseFloat(document.getElementById(`pin-charge`).value);if(!e||isNaN(n)){i(`Enter pincode and delivery charge`);return}try{j?(await u(`/pincodes/${j}`,{method:`PUT`,body:JSON.stringify({deliveryCharge:n,areaName:t})}),i(`Pincode updated`)):(await u(`/pincodes`,{method:`POST`,body:JSON.stringify({pincode:e,deliveryCharge:n,areaName:t})}),i(`Pincode added`)),o(),M()}catch(e){i(e.message)}}document.addEventListener(`DOMContentLoaded`,()=>{d(),f(),p(),y(),_(),v(),A(),M()});
+  `),document.getElementById(`pin-save`).addEventListener(`click`,V)};async function V(){let e=document.getElementById(`pin-code`).value.trim(),t=document.getElementById(`pin-area`).value.trim(),n=parseFloat(document.getElementById(`pin-charge`).value);if(!e||isNaN(n)){i(`Enter pincode and delivery charge`);return}try{z?(await u(`/pincodes/${z}`,{method:`PUT`,body:JSON.stringify({deliveryCharge:n,areaName:t})}),i(`Pincode updated`)):(await u(`/pincodes`,{method:`POST`,body:JSON.stringify({pincode:e,deliveryCharge:n,areaName:t})}),i(`Pincode added`)),o(),B()}catch(e){i(e.message)}}document.addEventListener(`DOMContentLoaded`,()=>{d(),f(),p(),y(),_(),v(),A(),B(),M(),I()});

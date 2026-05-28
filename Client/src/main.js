@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSmoothNav();
   initNavSearch();
   initCompanyInfo();
+  initFeaturedTypes();
 });
 
 // ─── CUSTOM CURSOR (disabled — using regular cursor) ──
@@ -422,16 +423,65 @@ function showToast(msg) {
   }, 2800);
 }
 
-// ─── HERO ───────────────────────────────────────
-function initHero() {
-  const img = document.getElementById('hero-bg-img');
-  if (img) {
-    if (img.complete) {
-      img.classList.add('loaded');
-    } else {
-      img.addEventListener('load', () => img.classList.add('loaded'));
+// ─── HERO CAROUSEL ──────────────────────────────
+let heroSlides = [];
+let heroCurrent = 0;
+let heroTimer = null;
+
+async function initHero() {
+  const bg = document.getElementById('hero-bg');
+  const tag = document.getElementById('hero-tag');
+  const title = document.getElementById('hero-title');
+  const subtitle = document.getElementById('hero-subtitle');
+  const dots = document.getElementById('hero-dots');
+  if (!bg) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/settings/hero-slides`);
+    const data = await res.json();
+    heroSlides = data.slides || [];
+  } catch (_) {}
+
+  if (heroSlides.length === 0) {
+    bg.style.background = 'linear-gradient(135deg, #1a0f0a 0%, #2c1810 50%, #4a2e1e 100%)';
+    if (title) title.innerHTML = 'Furniture <span class="italic">crafted</span> with soul.';
+    if (tag) tag.textContent = 'Est. 2009 · Artisan Workshop';
+    if (subtitle) subtitle.textContent = 'Every piece tells a story. Handmade to order using sustainably sourced solid woods and premium upholstery — built to be passed down through generations.';
+    return;
+  }
+
+  function showSlide(index) {
+    const s = heroSlides[index];
+    if (!s) return;
+    bg.style.backgroundImage = `url(${s.imageUrl})`;
+    bg.style.backgroundSize = 'cover';
+    bg.style.backgroundPosition = 'center';
+    if (tag) tag.textContent = s.subtitle || 'Jangid · Artisan Workshop';
+    if (title) title.innerHTML = s.title ? s.title.replace(/\n/g, '<br>') : 'Jangid';
+    if (subtitle) {
+      subtitle.textContent = s.subtitle || '';
+      subtitle.style.display = s.subtitle ? '' : 'none';
+    }
+    if (dots) {
+      dots.innerHTML = heroSlides.map((_, i) =>
+        `<button class="hero-dot ${i === index ? 'active' : ''}" data-index="${i}" aria-label="Slide ${i+1}"></button>`
+      ).join('');
+      dots.querySelectorAll('.hero-dot').forEach(btn => {
+        btn.addEventListener('click', () => { clearInterval(heroTimer); showSlide(parseInt(btn.dataset.index)); startTimer(); });
+      });
+    }
+    heroCurrent = index;
+  }
+
+  function startTimer() {
+    if (heroTimer) clearInterval(heroTimer);
+    if (heroSlides.length > 1) {
+      heroTimer = setInterval(() => showSlide((heroCurrent + 1) % heroSlides.length), 6000);
     }
   }
+
+  showSlide(0);
+  startTimer();
 }
 
 // ─── COUNTERS ───────────────────────────────────
@@ -1054,10 +1104,10 @@ function initSmoothNav() {
 
   // Parallax hero
   window.addEventListener('scroll', () => {
-    const hero = document.querySelector('.hero-bg-img');
+    const hero = document.getElementById('hero-bg');
     if (hero) {
       const scrolled = window.scrollY;
-      hero.style.transform = `scale(1) translateY(${scrolled * 0.3}px)`;
+      hero.style.transform = `translateY(${scrolled * 0.2}px)`;
     }
   }, { passive: true });
 
@@ -1092,6 +1142,79 @@ async function initCompanyInfo() {
     }
   } catch (_) {
     // Silently fail — hardcoded defaults remain visible
+  }
+}
+
+// ─── FEATURED TYPES CAROUSEL ────────────────────
+async function initFeaturedTypes() {
+  const track = document.getElementById('featured-track');
+  const dots = document.getElementById('featured-dots');
+  const prev = document.getElementById('featured-prev');
+  const next = document.getElementById('featured-next');
+  if (!track) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/settings/featured-types`);
+    const data = await res.json();
+    const types = data.types || [];
+    if (types.length === 0) { document.getElementById('featured').style.display = 'none'; return; }
+
+    track.innerHTML = types.map(t => `
+      <div class="featured-card">
+        <div class="featured-card-img">
+          ${t.imageUrl ? `<img src="${t.imageUrl}" alt="${t.name}" loading="lazy" />` : '<div class="featured-card-placeholder"></div>'}
+        </div>
+        <div class="featured-card-body">
+          <h3>${t.name}</h3>
+          ${t.description ? `<p>${t.description}</p>` : ''}
+          <a href="#collections" class="featured-card-link">Explore →</a>
+        </div>
+      </div>
+    `).join('');
+
+    const cards = track.querySelectorAll('.featured-card');
+    let current = 0;
+    const perView = window.innerWidth < 600 ? 1 : window.innerWidth < 900 ? 2 : 3;
+    const max = Math.max(0, cards.length - perView);
+
+    function updateCarousel() {
+      cards.forEach((c, i) => {
+        c.classList.toggle('active', i >= current && i < current + perView);
+      });
+      if (dots) {
+        const dotCount = Math.max(1, cards.length - perView + 1);
+        dots.innerHTML = Array.from({ length: dotCount }, (_, i) =>
+          `<button class="featured-dot ${i === current ? 'active' : ''}" data-idx="${i}"></button>`
+        ).join('');
+        dots.querySelectorAll('.featured-dot').forEach(btn => {
+          btn.addEventListener('click', () => { current = parseInt(btn.dataset.idx); updateCarousel(); });
+        });
+      }
+    }
+
+    prev?.addEventListener('click', () => { if (current > 0) { current--; updateCarousel(); } });
+    next?.addEventListener('click', () => { if (current < max) { current++; updateCarousel(); } });
+
+    // Touch swipe
+    let startX = 0;
+    track.addEventListener('touchstart', e => { startX = e.changedTouches[0].screenX; }, { passive: true });
+    track.addEventListener('touchend', e => {
+      const diff = startX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0 && current < max) { current++; updateCarousel(); }
+        else if (diff < 0 && current > 0) { current--; updateCarousel(); }
+      }
+    }, { passive: true });
+
+    // Recalculate perView on resize
+    window.addEventListener('resize', () => {
+      const v = window.innerWidth < 600 ? 1 : window.innerWidth < 900 ? 2 : 3;
+      if (v !== perView) location.reload(); // simple approach: refresh to re-render
+    });
+
+    updateCarousel();
+  } catch (_) {
+    document.getElementById('featured').style.display = 'none';
   }
 }
 
