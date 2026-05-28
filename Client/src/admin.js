@@ -1597,6 +1597,4 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAddress();
   loadEnquiries();
   loadPincodes();
-  loadHeroSlides();
-  loadFeaturedTypes();
 });
