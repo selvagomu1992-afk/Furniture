@@ -1211,7 +1211,7 @@ async function loadHeroSlides() {
           <img src="${s.imageUrl}" alt="${s.title || ''}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />
           <div>
             <strong>${s.title || 'Untitled'}</strong>
-            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">#${s.order} · ${s.active ? 'Active' : 'Inactive'} · ${s.transition || 'zoom'}</span>
+            ${s.subtitle ? `<span style="display:block;font-size:0.72rem;color:var(--walnut-light);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.subtitle}</span>` : ''}
           </div>
         </div>
         <div class="pincode-card-right">
@@ -1242,6 +1242,8 @@ function heroFormHtml(s) {
         </div>
       </div>
     </div>
+    <div class="form-group"><label>Title / Heading</label><input type="text" id="hero-title" class="form-input" value="${s?.title || ''}" placeholder="e.g. Furniture crafted with soul" /></div>
+    <div class="form-group"><label>Description</label><textarea id="hero-subtitle" class="form-input" rows="2" style="resize:vertical;" placeholder="e.g. Handmade to order using sustainably sourced solid woods...">${s?.subtitle || ''}</textarea></div>
     <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
       <button class="btn-primary" id="hero-save-btn">${s ? 'Update' : 'Add'}</button>
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
@@ -1285,9 +1287,11 @@ window.editHeroSlide = (id) => {
 
 async function saveHeroSlide() {
   const imageUrl = document.getElementById('hero-preview')?.getAttribute('src') || '';
+  const title = document.getElementById('hero-title')?.value.trim() || '';
+  const subtitle = document.getElementById('hero-subtitle')?.value.trim() || '';
   if (!imageUrl || imageUrl === 'No image') { showToast('Please upload an image'); return; }
   try {
-    const body = JSON.stringify({ imageUrl });
+    const body = JSON.stringify({ imageUrl, title, subtitle });
     if (heroEditId) { await api(`/hero-slides/${heroEditId}`, { method: 'PUT', body }); showToast('Updated'); }
     else { await api('/hero-slides', { method: 'POST', body }); showToast('Added'); }
     closeModal(); loadHeroSlides();
