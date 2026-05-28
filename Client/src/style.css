@@ -2194,14 +2194,60 @@ body.cursor-hover .cursor-follower {
 }
 
 @media (max-width: 768px) {
+  /* ── Navbar ── */
+  .navbar {
+    padding: 1rem 1.25rem;
+  }
+  .navbar.scrolled {
+    padding: 0.75rem 1.25rem;
+  }
+  .nav-inner {
+    gap: 0.75rem;
+  }
   .nav-links { display: none; }
+  .nav-actions {
+    gap: 0.5rem;
+  }
+  /* Hide sign-in button on mobile — hamburger menu has it */
+  .nav-signin-btn:not(.logged-in) {
+    display: none;
+  }
+  /* Search box narrower on mobile */
+  .nav-search-box {
+    width: 180px;
+  }
+  .nav-search-results {
+    width: 240px;
+    right: -1rem;
+  }
   .hamburger { display: flex; }
+
+  /* ── Layout ── */
   .customise-grid, .details-grid { grid-template-columns: 1fr; }
   .footer-links { grid-template-columns: 1fr 1fr; }
   .testimonial-card { padding: 2rem; }
   .order-form-wrap { border-radius: var(--radius-lg); }
   .form-step { padding: 1.75rem; }
   .piece-selector { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.85rem 1rem;
+  }
+  .navbar.scrolled {
+    padding: 0.65rem 1rem;
+  }
+  .nav-inner {
+    gap: 0.5rem;
+  }
+  /* On very small screens hide search toggle too — keep only logo + cart + hamburger */
+  .nav-search {
+    display: none;
+  }
+  .nav-actions {
+    gap: 0.4rem;
+  }
 }
 
 @media (max-width: 600px) {
