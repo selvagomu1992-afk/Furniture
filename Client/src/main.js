@@ -220,6 +220,28 @@ function initAuth() {
         localStorage.removeItem('user');
         window.location.reload();
       });
+
+      // Update mobile menu sign-in → user name + sign out
+      const mobSignin = document.getElementById('mob-signin');
+      if (mobSignin) {
+        const links = [];
+        if (user.role === 'ADMIN') links.push('<a href="/admin.html" class="mobile-link">Admin Panel</a>');
+        links.push('<a href="/orders.html" class="mobile-link">My Orders</a>');
+        mobSignin.outerHTML = `
+          <div class="mobile-user">
+            <span class="mobile-user-name">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              ${user.role === 'ADMIN' ? 'Jangid' : user.firstName}
+            </span>
+            ${links.join('')}
+            <button class="mobile-link mobile-signout" id="mob-signout">Sign Out</button>
+          </div>`;
+        document.getElementById('mob-signout')?.addEventListener('click', () => {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.reload();
+        });
+      }
     } catch (_) { /* ignore parse errors */ }
   }
 }

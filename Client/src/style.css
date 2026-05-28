@@ -808,6 +808,41 @@ body.cursor-hover .cursor-follower {
   color: var(--gold);
 }
 
+.mobile-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.mobile-user-name {
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 1;
+}
+
+.mobile-signout {
+  background: none;
+  border: 1px solid var(--cream);
+  border-radius: 100px;
+  padding: 0.4rem 1.25rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--cream);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.3s, background 0.3s;
+}
+
+.mobile-signout:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.1);
+}
+
 /* === CART SIDEBAR === */
 .cart-overlay {
   position: fixed;
