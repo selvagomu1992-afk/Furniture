@@ -147,6 +147,26 @@ async function main() {
   }
 
   console.log(`✅ ${products.length} products seeded`);
+
+  // ─── Hero Slides ────────────────────────────
+  const existingSlides = await prisma.heroSlide.count();
+  if (existingSlides === 0) {
+    const FE = process.env.CLIENT_URL || 'https://sofazone.onrender.com';
+    const heroSeed = [
+      { order: 1, imageUrl: `${FE}/hero.png`,         title: 'Furniture <span class="italic">crafted</span> with soul.',                  subtitle: 'Handmade to order using sustainably sourced solid woods and premium upholstery.' },
+      { order: 2, imageUrl: `${FE}/dining_table.png`,  title: 'Heirloom quality, <span class="italic">made for you.</span>',               subtitle: 'Every piece tells a story. From our workshop to your home.' },
+      { order: 3, imageUrl: `${FE}/armchair.png`,      title: 'Solid Walnut. <span class="italic">Built to last.</span>',                   subtitle: 'Each joint hand-cut, each surface hand-finished by master artisans.' },
+      { order: 4, imageUrl: `${FE}/bed_frame.png`,     title: 'Your vision, <span class="italic">our craft.</span>',                        subtitle: 'Commission a bespoke piece tailored to your space, style, and needs.' },
+      { order: 5, imageUrl: `${FE}/coffee_table.png`,  title: 'Sustainable luxury <span class="italic">for every home.</span>',             subtitle: 'FSC-certified timber, traditional joinery, and a 15-year guarantee.' },
+    ];
+    for (const s of heroSeed) {
+      await prisma.heroSlide.create({ data: { ...s, active: true } });
+    }
+    console.log(`✅ ${heroSeed.length} hero slides seeded`);
+  } else {
+    console.log(`⏭️  ${existingSlides} hero slides already exist, skipping`);
+  }
+
   console.log('\n🎉 Database seeded successfully!\n');
 }
 
