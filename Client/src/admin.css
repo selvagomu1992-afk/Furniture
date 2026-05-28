@@ -547,8 +547,10 @@ input, select, textarea, button { font-family: inherit; font-size: inherit; }
   display:flex; align-items:center; justify-content:space-between;
   background:var(--cream); border:1px solid var(--cream-mid); border-radius:var(--radius-sm);
   padding:0.9rem 1.1rem; transition:border-color 0.15s;
+  overflow: hidden;
 }
 .pincode-card:hover { border-color:var(--walnut-mid); }
+.pincode-card img { flex-shrink: 0; object-fit: cover; }
 .pincode-card-left { display:flex; flex-direction:column; gap:0.15rem; min-width:140px; }
 .pincode-code { font-weight:700; font-size:1rem; color:var(--walnut); letter-spacing:0.04em; }
 .pincode-area { font-size:0.75rem; color:var(--walnut-light); }
@@ -585,6 +587,7 @@ input, select, textarea, button { font-family: inherit; font-size: inherit; }
   display: flex;
   align-items: flex-end;
   transition: background-image 0.5s ease;
+  overflow: hidden;
 }
 
 .hero-preview-overlay {
