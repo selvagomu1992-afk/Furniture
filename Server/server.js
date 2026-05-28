@@ -25,8 +25,21 @@ const app  = express();
 const PORT = process.env.PORT || 5000;
 
 // ─── MIDDLEWARE ──────────────────────────────────
+const ALLOWED_ORIGINS = [
+  'https://sofazone.onrender.com',          // production client
+  process.env.CLIENT_URL,                   // override via env (optional)
+  'http://localhost:5173',                  // vite dev
+  'http://localhost:5174',                  // vite dev (alt port)
+  'http://localhost:3000',
+].filter(Boolean);
+
 app.use(cors({
-  origin:      process.env.CLIENT_URL || 'https://sofazone.onrender.com',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
   credentials: true,
   methods:     ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
