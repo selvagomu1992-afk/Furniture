@@ -1197,15 +1197,60 @@ document.getElementById('enquiry-filter')?.addEventListener('change', loadEnquir
 // ─── Hero Slides ────────────────────────────────
 let heroEditId = null;
 
+function updateHeroPreview(slides) {
+  const panel = document.getElementById('hero-preview-image');
+  const tag = document.getElementById('hero-preview-tag');
+  const title = document.getElementById('hero-preview-title');
+  const subtitle = document.getElementById('hero-preview-subtitle');
+  if (!panel) return;
+
+  if (!slides || slides.length === 0) {
+    panel.style.backgroundImage = '';
+    panel.style.background = 'linear-gradient(135deg, #1a0f0a 0%, #2c1810 50%, #4a2e1e 100%)';
+    if (tag) tag.textContent = 'No slides added';
+    if (title) title.textContent = 'Add a hero image';
+    if (subtitle) subtitle.textContent = '';
+    // Remove dots
+    const existingDots = panel.querySelector('.hero-preview-dots');
+    if (existingDots) existingDots.remove();
+    return;
+  }
+
+  const s = slides[0];
+  panel.style.backgroundImage = `url(${s.imageUrl})`;
+  panel.style.backgroundSize = 'cover';
+  panel.style.backgroundPosition = 'center';
+  if (tag) tag.textContent = s.subtitle ? s.subtitle.slice(0, 50) : 'Hero Slide';
+  if (title) title.innerHTML = s.title || 'Untitled';
+  if (subtitle) subtitle.textContent = s.subtitle || '';
+
+  // Add dots if multiple slides
+  let dotsEl = panel.querySelector('.hero-preview-dots');
+  if (!dotsEl) {
+    dotsEl = document.createElement('div');
+    dotsEl.className = 'hero-preview-dots';
+    panel.appendChild(dotsEl);
+  }
+  if (slides.length > 1) {
+    dotsEl.innerHTML = slides.map((_, i) => `<span class="hero-preview-dot ${i === 0 ? 'active' : ''}"></span>`).join('');
+  } else {
+    dotsEl.innerHTML = '';
+  }
+}
+
 async function loadHeroSlides() {
   try {
     const data = await api('/hero-slides');
     const container = document.getElementById('hero-slides-container');
-    if (!data.slides || data.slides.length === 0) {
-      container.innerHTML = '<p class="muted">No hero slides yet. Click "+ Add Slide" to add one.</p>';
+    const slides = data.slides || [];
+
+    updateHeroPreview(slides);
+
+    if (slides.length === 0) {
+      container.innerHTML = '<p class="muted">No hero slides yet. Click "+ Add Image" to add one.</p>';
       return;
     }
-    container.innerHTML = data.slides.map((s, i) => `
+    container.innerHTML = slides.map((s, i) => `
       <div class="pincode-card" style="margin-bottom:0.5rem;">
         <div style="display:flex;align-items:center;gap:0.75rem;">
           <img src="${s.imageUrl}" alt="${s.title || ''}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />
