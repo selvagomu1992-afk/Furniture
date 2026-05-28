@@ -1237,11 +1237,12 @@ function heroFormHtml(s) {
           ${s?.imageUrl ? `<img src="${s.imageUrl}" id="hero-preview" />` : '<span class="upload-placeholder" id="hero-preview">No image</span>'}
         </div>
         <div class="image-upload-actions">
-          <button class="upload-btn-custom" onclick="uploadHeroImage()">Upload Image</button>
+          <button class="upload-btn-custom" onclick="uploadHeroImage()">Upload File</button>
           <span class="upload-status" id="hero-upload-status"></span>
         </div>
       </div>
     </div>
+    <div class="form-group"><label>Image URL</label><input type="url" id="hero-url" class="form-input" value="${s?.imageUrl || ''}" placeholder="https://example.com/image.jpg" oninput="window.heroUrlPreview(this.value)" /></div>
     <div class="form-group"><label>Title / Heading</label><input type="text" id="hero-title" class="form-input" value="${s?.title || ''}" placeholder="e.g. Furniture crafted with soul" /></div>
     <div class="form-group"><label>Description</label><textarea id="hero-subtitle" class="form-input" rows="2" style="resize:vertical;" placeholder="e.g. Handmade to order using sustainably sourced solid woods...">${s?.subtitle || ''}</textarea></div>
     <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
@@ -1250,6 +1251,18 @@ function heroFormHtml(s) {
     </div>
   `;
 }
+
+window.heroUrlPreview = (url) => {
+  const preview = document.getElementById('hero-preview');
+  const status = document.getElementById('hero-upload-status');
+  if (!url) return;
+  if (preview.tagName === 'SPAN') {
+    preview.outerHTML = `<img src="${url}" id="hero-preview" style="width:100%;height:100%;object-fit:cover;" onerror="this.outerHTML='<span class=\\'upload-placeholder\\' id=\\'hero-preview\\'>Invalid URL</span>'" />`;
+  } else {
+    preview.src = url;
+  }
+  if (status) status.textContent = 'URL set';
+};
 
 window.uploadHeroImage = () => {
   const input = document.createElement('input');
@@ -1286,10 +1299,10 @@ window.editHeroSlide = (id) => {
 };
 
 async function saveHeroSlide() {
-  const imageUrl = document.getElementById('hero-preview')?.getAttribute('src') || '';
+  const imageUrl = document.getElementById('hero-url')?.value.trim() || document.getElementById('hero-preview')?.getAttribute('src') || '';
   const title = document.getElementById('hero-title')?.value.trim() || '';
   const subtitle = document.getElementById('hero-subtitle')?.value.trim() || '';
-  if (!imageUrl || imageUrl === 'No image') { showToast('Please upload an image'); return; }
+  if (!imageUrl || imageUrl === 'No image') { showToast('Please add an image URL or upload a file'); return; }
   try {
     const body = JSON.stringify({ imageUrl, title, subtitle });
     if (heroEditId) { await api(`/hero-slides/${heroEditId}`, { method: 'PUT', body }); showToast('Updated'); }
