@@ -1242,22 +1242,6 @@ function heroFormHtml(s) {
         </div>
       </div>
     </div>
-    <div class="form-group"><label>Title</label><input type="text" id="hero-title" class="form-input" value="${s?.title || ''}" /></div>
-    <div class="form-group"><label>Subtitle</label><input type="text" id="hero-subtitle" class="form-input" value="${s?.subtitle || ''}" /></div>
-    <div class="form-group"><label>Link (optional)</label><input type="text" id="hero-link" class="form-input" value="${s?.link || ''}" placeholder="#order" /></div>
-    <div class="form-group"><label>Order</label><input type="number" id="hero-order" class="form-input" value="${s?.order ?? 0}" min="0" /></div>
-    <div class="form-group"><label>Transition Effect</label>
-      <select id="hero-transition" class="form-input" style="appearance:auto;">
-        <option value="zoom" ${(s?.transition || 'zoom') === 'zoom' ? 'selected' : ''}>Zoom In</option>
-        <option value="fade" ${s?.transition === 'fade' ? 'selected' : ''}>Fade</option>
-        <option value="slide-left" ${s?.transition === 'slide-left' ? 'selected' : ''}>Slide Left</option>
-        <option value="slide-up" ${s?.transition === 'slide-up' ? 'selected' : ''}>Slide Up</option>
-        <option value="none" ${s?.transition === 'none' ? 'selected' : ''}>None</option>
-      </select>
-    </div>
-    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;">
-      <input type="checkbox" id="hero-active" ${s?.active !== false ? 'checked' : ''} /> Active
-    </label>
     <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
       <button class="btn-primary" id="hero-save-btn">${s ? 'Update' : 'Add'}</button>
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
@@ -1301,17 +1285,11 @@ window.editHeroSlide = (id) => {
 
 async function saveHeroSlide() {
   const imageUrl = document.getElementById('hero-preview')?.getAttribute('src') || '';
-  const title = document.getElementById('hero-title').value.trim();
-  const subtitle = document.getElementById('hero-subtitle').value.trim();
-  const link = document.getElementById('hero-link').value.trim();
-  const order = parseInt(document.getElementById('hero-order').value) || 0;
-  const active = document.getElementById('hero-active').checked;
-  const transition = document.getElementById('hero-transition').value || 'zoom';
   if (!imageUrl || imageUrl === 'No image') { showToast('Please upload an image'); return; }
   try {
-    const body = JSON.stringify({ imageUrl, title, subtitle, link, order, active, transition });
-    if (heroEditId) { await api(`/hero-slides/${heroEditId}`, { method: 'PUT', body }); showToast('Slide updated'); }
-    else { await api('/hero-slides', { method: 'POST', body }); showToast('Slide added'); }
+    const body = JSON.stringify({ imageUrl });
+    if (heroEditId) { await api(`/hero-slides/${heroEditId}`, { method: 'PUT', body }); showToast('Updated'); }
+    else { await api('/hero-slides', { method: 'POST', body }); showToast('Added'); }
     closeModal(); loadHeroSlides();
   } catch (e) { showToast(e.message); }
 }
@@ -1597,4 +1575,5 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAddress();
   loadEnquiries();
   loadPincodes();
+  loadHeroSlides();
 });
