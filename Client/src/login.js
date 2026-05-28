@@ -171,7 +171,13 @@ function initRegisterForm() {
       const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, password, newsletter }),
+        body: JSON.stringify({
+          firstName: fn,
+          lastName: ln,
+          email,
+          password: pwd,
+          newsletter: document.getElementById('reg-newsletter')?.checked ?? false,
+        }),
       });
 
       const data = await res.json();
