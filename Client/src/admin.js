@@ -84,7 +84,6 @@ document.getElementById('modal-overlay').addEventListener('click', closeModal);
   try {
     const u = JSON.parse(user);
     if (u.role !== 'ADMIN') { window.location.href = '/index.html'; return; }
-    document.querySelector('.admin-badge').textContent = u.firstName;
   } catch { window.location.href = '/login.html'; }
 })();
 
