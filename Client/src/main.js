@@ -453,9 +453,16 @@ async function initHero() {
   function showSlide(index) {
     const s = heroSlides[index];
     if (!s) return;
+    const prev = heroSlides[heroCurrent];
+    const transition = s.transition || 'zoom';
+
+    // Remove all transition classes
+    bg.classList.remove('hero-trans-zoom', 'hero-trans-fade', 'hero-trans-slide-left', 'hero-trans-slide-up', 'hero-trans-none');
+
     bg.style.backgroundImage = `url(${s.imageUrl})`;
     bg.style.backgroundSize = 'cover';
     bg.style.backgroundPosition = 'center';
+
     if (tag) tag.textContent = s.subtitle || 'Jangid · Artisan Workshop';
     if (title) title.innerHTML = s.title ? s.title.replace(/\n/g, '<br>') : 'Jangid';
     if (subtitle) {
@@ -470,6 +477,11 @@ async function initHero() {
         btn.addEventListener('click', () => { clearInterval(heroTimer); showSlide(parseInt(btn.dataset.index)); startTimer(); });
       });
     }
+
+    // Force reflow then add transition class
+    void bg.offsetWidth;
+    bg.classList.add('hero-trans-' + transition);
+
     heroCurrent = index;
   }
 

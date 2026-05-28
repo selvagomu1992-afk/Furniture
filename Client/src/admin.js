@@ -1211,7 +1211,7 @@ async function loadHeroSlides() {
           <img src="${s.imageUrl}" alt="${s.title || ''}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />
           <div>
             <strong>${s.title || 'Untitled'}</strong>
-            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${s.order} · ${s.active ? 'Active' : 'Inactive'}</span>
+            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">#${s.order} · ${s.active ? 'Active' : 'Inactive'} · ${s.transition || 'zoom'}</span>
           </div>
         </div>
         <div class="pincode-card-right">
@@ -1246,6 +1246,15 @@ function heroFormHtml(s) {
     <div class="form-group"><label>Subtitle</label><input type="text" id="hero-subtitle" class="form-input" value="${s?.subtitle || ''}" /></div>
     <div class="form-group"><label>Link (optional)</label><input type="text" id="hero-link" class="form-input" value="${s?.link || ''}" placeholder="#order" /></div>
     <div class="form-group"><label>Order</label><input type="number" id="hero-order" class="form-input" value="${s?.order ?? 0}" min="0" /></div>
+    <div class="form-group"><label>Transition Effect</label>
+      <select id="hero-transition" class="form-input" style="appearance:auto;">
+        <option value="zoom" ${(s?.transition || 'zoom') === 'zoom' ? 'selected' : ''}>Zoom In</option>
+        <option value="fade" ${s?.transition === 'fade' ? 'selected' : ''}>Fade</option>
+        <option value="slide-left" ${s?.transition === 'slide-left' ? 'selected' : ''}>Slide Left</option>
+        <option value="slide-up" ${s?.transition === 'slide-up' ? 'selected' : ''}>Slide Up</option>
+        <option value="none" ${s?.transition === 'none' ? 'selected' : ''}>None</option>
+      </select>
+    </div>
     <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;">
       <input type="checkbox" id="hero-active" ${s?.active !== false ? 'checked' : ''} /> Active
     </label>
@@ -1297,9 +1306,10 @@ async function saveHeroSlide() {
   const link = document.getElementById('hero-link').value.trim();
   const order = parseInt(document.getElementById('hero-order').value) || 0;
   const active = document.getElementById('hero-active').checked;
+  const transition = document.getElementById('hero-transition').value || 'zoom';
   if (!imageUrl || imageUrl === 'No image') { showToast('Please upload an image'); return; }
   try {
-    const body = JSON.stringify({ imageUrl, title, subtitle, link, order, active });
+    const body = JSON.stringify({ imageUrl, title, subtitle, link, order, active, transition });
     if (heroEditId) { await api(`/hero-slides/${heroEditId}`, { method: 'PUT', body }); showToast('Slide updated'); }
     else { await api('/hero-slides', { method: 'POST', body }); showToast('Slide added'); }
     closeModal(); loadHeroSlides();

@@ -426,19 +426,19 @@ export const getHeroSlides = asyncHandler(async (_req, res) => {
 });
 
 export const createHeroSlide = asyncHandler(async (req, res) => {
-  const { imageUrl, title, subtitle, link, order } = req.body;
+  const { imageUrl, title, subtitle, link, order, transition } = req.body;
   if (!imageUrl) return res.status(400).json({ success: false, message: 'Image URL required' });
   const slide = await prisma.heroSlide.create({
-    data: { imageUrl, title, subtitle, link, order: parseInt(order) || 0 },
+    data: { imageUrl, title, subtitle, link, order: parseInt(order) || 0, transition: transition || 'zoom' },
   });
   res.status(201).json({ success: true, slide });
 });
 
 export const updateHeroSlide = asyncHandler(async (req, res) => {
-  const { imageUrl, title, subtitle, link, order, active } = req.body;
+  const { imageUrl, title, subtitle, link, order, active, transition } = req.body;
   const slide = await prisma.heroSlide.update({
     where: { id: req.params.id },
-    data: { imageUrl, title, subtitle, link, order: parseInt(order), active },
+    data: { imageUrl, title, subtitle, link, order: parseInt(order), active, transition },
   });
   res.json({ success: true, slide });
 });

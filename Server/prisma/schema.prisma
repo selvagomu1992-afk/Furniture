@@ -177,15 +177,16 @@ model Pincode {
 
 // ─── HERO SLIDE ──────────────────────────────────
 model HeroSlide {
-  id        String   @id @default(cuid())
-  imageUrl  String
-  title     String?
-  subtitle  String?
-  link      String?
-  order     Int      @default(0)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  imageUrl   String
+  title      String?
+  subtitle   String?
+  link       String?
+  order      Int      @default(0)
+  active     Boolean  @default(true)
+  transition String   @default("zoom")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("hero_slides")
 }

@@ -979,7 +979,41 @@ input, select, textarea, button {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: background-image 1.2s var(--ease-out);
+  will-change: transform, opacity;
+}
+
+/* Hero transition effects */
+.hero-trans-zoom {
+  animation: heroZoom 6s var(--ease-out) forwards;
+}
+.hero-trans-fade {
+  animation: heroFade 1.2s var(--ease-out) forwards;
+}
+.hero-trans-slide-left {
+  animation: heroSlideLeft 0.8s var(--ease-out) forwards;
+}
+.hero-trans-slide-up {
+  animation: heroSlideUp 0.8s var(--ease-out) forwards;
+}
+.hero-trans-none {
+  animation: none;
+}
+
+@keyframes heroZoom {
+  0%   { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+@keyframes heroFade {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes heroSlideLeft {
+  0%   { transform: translateX(60px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes heroSlideUp {
+  0%   { transform: translateY(60px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
 .hero-overlay {
