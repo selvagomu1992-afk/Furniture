@@ -1318,53 +1318,113 @@ async function saveHeroSlide() {
 
 // ─── Featured Types (Carousel) ───────────────────
 let featuredEditId = null;
+let allTypes = [];
 
 async function loadFeaturedTypes() {
   try {
     const data = await api('/featured-types');
-    const container = document.getElementById('featured-types-container');
-    if (!data.types || data.types.length === 0) {
-      container.innerHTML = '<p class="muted">No featured types yet. Click "+ Add Type" to add one.</p>';
-      return;
-    }
-    const featuredCount = data.types.filter(t => t.featured).length;
-    const heading = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-      <strong>All Types</strong>
-      <span style="font-size:0.8rem;color:var(--walnut-light);">Featured: ${featuredCount}/5</span>
-    </div>`;
-    container.innerHTML = heading + data.types.map(t => `
-      <div class="pincode-card" style="margin-bottom:0.5rem;">
-        <div style="display:flex;align-items:center;gap:0.75rem;">
-          ${t.imageUrl ? `<img src="${t.imageUrl}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />` : '<div style="width:60px;height:40px;border-radius:4px;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--walnut-light);">No img</div>'}
-          <div>
-            <strong>${t.name}</strong>
-            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${t.order} · ${t.active ? 'Active' : 'Inactive'}${t.featured ? ` · Carousel #${t.featuredOrder}` : ''}</span>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;">
-          <button class="btn-table btn-secondary" onclick="toggleFeatured('${t.id}', ${!t.featured})" style="font-size:0.65rem;padding:0.25rem 0.5rem;${t.featured ? 'background:var(--terracotta);color:#fff;border-color:var(--terracotta);' : ''}">${t.featured ? '★ Featured' : '☆ Feature'}</button>
-          <div class="pincode-card-right">
-            <button class="btn-secondary btn-table" onclick="editFeaturedType('${t.id}')">Edit</button>
-            <button class="btn-danger btn-table" onclick="deleteFeaturedType('${t.id}')">Delete</button>
-          </div>
-        </div>
-      </div>
-    `).join('');
+    allTypes = data.types || [];
+    renderCarouselSlots();
+    renderTypesList();
   } catch (e) { showToast('Carousel: ' + e.message); }
 }
+
+function renderCarouselSlots() {
+  const slotsContainer = document.getElementById('carousel-slots');
+  if (!slotsContainer) return;
+
+  // Build the slot -> type mapping
+  const featured = allTypes.filter(t => t.featured).sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0));
+  const slotAssignments = [];
+  for (let i = 0; i < 5; i++) {
+    const assigned = featured.find(t => (t.featuredOrder || 0) === i + 1) || featured.find(t => !slotAssignments.includes(t.id) && t.featured);
+    slotAssignments.push(assigned ? assigned.id : '');
+  }
+
+  const activeTypes = allTypes.filter(t => t.active);
+  const noneOption = '<option value="">— None —</option>';
+  const typeOptions = activeTypes.map(t =>
+    `<option value="${t.id}">${t.name}${t.featured ? ' ★' : ''}</option>`
+  ).join('');
+
+  slotsContainer.innerHTML = Array.from({ length: 5 }, (_, i) => `
+    <div class="pincode-card" style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0.75rem;">
+      <span style="font-weight:600;font-size:0.85rem;min-width:50px;color:var(--terracotta);">Slot ${i + 1}</span>
+      <select class="carousel-slot-select" data-slot="${i + 1}" style="flex:1;padding:0.4rem 0.5rem;border:1.5px solid var(--cream-mid);border-radius:6px;background:var(--white);font-size:0.82rem;color:var(--walnut);">
+        ${noneOption}
+        ${typeOptions}
+      </select>
+      <span class="slot-preview" id="slot-preview-${i}" style="font-size:0.75rem;color:var(--walnut-light);min-width:60px;text-align:right;">
+        ${slotAssignments[i] ? '✓ Selected' : ''}
+      </span>
+    </div>
+  `).join('');
+
+  // Set selected values
+  slotsContainer.querySelectorAll('.carousel-slot-select').forEach(sel => {
+    const slot = parseInt(sel.dataset.slot);
+    const assigned = featured.find(t => t.featuredOrder === slot);
+    if (assigned) sel.value = assigned.id;
+  });
+}
+
+function renderTypesList() {
+  const container = document.getElementById('featured-types-container');
+  if (!container) return;
+  if (!allTypes.length) {
+    container.innerHTML = '<p class="muted">No types yet. Click "+ Add Type" to add one.</p>';
+    return;
+  }
+  const featuredCount = allTypes.filter(t => t.featured).length;
+  container.innerHTML = allTypes.map(t => `
+    <div class="pincode-card" style="margin-bottom:0.5rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        ${t.imageUrl ? `<img src="${t.imageUrl}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />` : '<div style="width:60px;height:40px;border-radius:4px;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--walnut-light);">No img</div>'}
+        <div>
+          <strong>${t.name}</strong>
+          <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${t.order} · ${t.active ? 'Active' : 'Inactive'}${t.featured ? ` · Carousel Slot #${t.featuredOrder}` : ''}</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <div class="pincode-card-right">
+          <button class="btn-secondary btn-table" onclick="editFeaturedType('${t.id}')">Edit</button>
+          <button class="btn-danger btn-table" onclick="deleteFeaturedType('${t.id}')">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('carousel-save-slots')?.addEventListener('click', async () => {
+  const selects = document.querySelectorAll('.carousel-slot-select');
+  const assignments = [];
+  selects.forEach(sel => {
+    const slot = parseInt(sel.dataset.slot);
+    const typeId = sel.value;
+    if (typeId) assignments.push({ typeId, slot });
+  });
+  if (assignments.length === 0) { showToast('Select at least one type for the carousel'); return; }
+
+  try {
+    // Clear all featured flags first
+    for (const t of allTypes) {
+      if (t.featured) {
+        await api(`/featured-types/${t.id}`, { method: 'PUT', body: JSON.stringify({ featured: false }) });
+      }
+    }
+    // Set new assignments
+    for (const a of assignments) {
+      await api(`/featured-types/${a.typeId}`, { method: 'PUT', body: JSON.stringify({ featured: true, featuredOrder: a.slot }) });
+    }
+    showToast('Carousel saved!');
+    loadFeaturedTypes();
+  } catch (e) { showToast(e.message); }
+});
 
 window.deleteFeaturedType = async (id) => {
   if (!confirm('Delete this type?')) return;
   try { await api(`/featured-types/${id}`, { method: 'DELETE' }); showToast('Deleted'); loadFeaturedTypes(); }
   catch (e) { showToast(e.message); }
-};
-
-window.toggleFeatured = async (id, featured) => {
-  try {
-    await api(`/featured-types/${id}`, { method: 'PUT', body: JSON.stringify({ featured }) });
-    showToast(featured ? 'Added to carousel' : 'Removed from carousel');
-    loadFeaturedTypes();
-  } catch (e) { showToast(e.message); }
 };
 
 function featuredFormHtml(t) {
@@ -1383,16 +1443,6 @@ function featuredFormHtml(t) {
     <div class="form-group"><label>Name</label><input type="text" id="ft-name" class="form-input" value="${t?.name || ''}" /></div>
     <div class="form-group"><label>Description</label><input type="text" id="ft-desc" class="form-input" value="${t?.description || ''}" /></div>
     <div class="form-group"><label>Order</label><input type="number" id="ft-order" class="form-input" value="${t?.order ?? 0}" min="0" /></div>
-      <div class="form-group" style="border:1px solid var(--cream-mid);border-radius:6px;padding:0.75rem;">
-      <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;font-weight:600;margin-bottom:0.5rem;">
-        <input type="checkbox" id="ft-featured" ${t?.featured ? 'checked' : ''} /> Show in homepage carousel
-      </label>
-      <p style="font-size:0.75rem;color:var(--walnut-light);margin:0;">Maximum 5 types can be featured. Only featured types appear on the homepage.</p>
-      <div class="form-group" style="display:${t?.featured ? 'block' : 'none'};margin:0.5rem 0 0;" id="ft-featured-order-group">
-        <label style="font-size:0.75rem;">Carousel Order</label>
-        <input type="number" id="ft-featured-order" class="form-input" value="${t?.featuredOrder ?? 0}" min="0" step="1" style="width:80px;" />
-      </div>
-    </div>
     <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;">
       <input type="checkbox" id="ft-active" ${t?.active !== false ? 'checked' : ''} /> Active
     </label>
@@ -1424,7 +1474,6 @@ document.getElementById('add-featured-btn').addEventListener('click', () => {
   featuredEditId = null;
   openModal('New Featured Type', featuredFormHtml(null));
   document.getElementById('ft-save-btn').addEventListener('click', saveFeaturedType);
-  document.getElementById('ft-featured')?.addEventListener('change', toggleFeaturedOrder);
 });
 
 window.editFeaturedType = (id) => {
@@ -1435,15 +1484,8 @@ window.editFeaturedType = (id) => {
     if (!t) { closeModal(); showToast('Not found'); return; }
     document.getElementById('modal-body').innerHTML = featuredFormHtml(t);
     document.getElementById('ft-save-btn').addEventListener('click', saveFeaturedType);
-    document.getElementById('ft-featured')?.addEventListener('change', toggleFeaturedOrder);
   }).catch(e => { showToast(e.message); closeModal(); });
 };
-
-function toggleFeaturedOrder() {
-  const cb = document.getElementById('ft-featured');
-  const grp = document.getElementById('ft-featured-order-group');
-  if (grp) grp.style.display = cb?.checked ? 'block' : 'none';
-}
 
 async function saveFeaturedType() {
   const imageUrl = document.getElementById('ft-preview')?.getAttribute('src') || '';
@@ -1451,11 +1493,9 @@ async function saveFeaturedType() {
   const description = document.getElementById('ft-desc').value.trim();
   const order = parseInt(document.getElementById('ft-order').value) || 0;
   const active = document.getElementById('ft-active').checked;
-  const featured = document.getElementById('ft-featured')?.checked || false;
-  const featuredOrder = parseInt(document.getElementById('ft-featured-order')?.value) || 0;
   if (!name) { showToast('Name is required'); return; }
   try {
-    const body = JSON.stringify({ name, description, imageUrl, order, active, featured, featuredOrder });
+    const body = JSON.stringify({ name, description, imageUrl, order, active });
     if (featuredEditId) { await api(`/featured-types/${featuredEditId}`, { method: 'PUT', body }); showToast('Updated'); }
     else { await api('/featured-types', { method: 'POST', body }); showToast('Added'); }
     closeModal(); loadFeaturedTypes();
