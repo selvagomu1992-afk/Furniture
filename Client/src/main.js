@@ -147,33 +147,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initCompanyInfo();
 });
 
-// ─── CUSTOM CURSOR ──────────────────────────────
+// ─── CUSTOM CURSOR (disabled — using regular cursor) ──
 function initCursor() {
+  // Custom cursor disabled — regular system cursor is used
   const cursor = document.getElementById('cursor');
   const follower = document.getElementById('cursor-follower');
-  if (!cursor || !follower) return;
-
-  let fx = 0, fy = 0;
-
-  document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top  = e.clientY + 'px';
-    fx += (e.clientX - fx) * 0.12;
-    fy += (e.clientY - fy) * 0.12;
-    follower.style.left = fx + 'px';
-    follower.style.top  = fy + 'px';
-  });
-
-  requestAnimationFrame(function tick() {
-    follower.style.left = fx + 'px';
-    follower.style.top  = fy + 'px';
-    requestAnimationFrame(tick);
-  });
-
-  document.querySelectorAll('a, button, .product-card, .piece-option, .filter-btn').forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-  });
+  if (cursor) cursor.style.display = 'none';
+  if (follower) follower.style.display = 'none';
 }
 
 // ─── AUTH ───────────────────────────────────────
