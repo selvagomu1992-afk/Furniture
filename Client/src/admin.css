@@ -647,3 +647,125 @@ input, select, textarea, button { font-family: inherit; font-size: inherit; }
 .hero-preview-dot.active {
   background: var(--gold);
 }
+
+/* ─── Hero Transition Selector ─── */
+.hero-transition-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.hero-transition-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.65rem 0.4rem;
+  border: 1.5px solid var(--cream-mid);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  position: relative;
+}
+
+.hero-transition-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-transition-option:hover {
+  border-color: var(--walnut-light);
+  background: rgba(245,240,232,0.5);
+}
+
+.hero-transition-option.active,
+.hero-transition-option:has(input:checked) {
+  border-color: var(--walnut);
+  background: var(--cream-dark);
+  box-shadow: 0 2px 8px rgba(44,24,16,0.1);
+}
+
+.hero-transition-icon {
+  width: 32px;
+  height: 22px;
+  border-radius: 3px;
+  background: var(--cream-mid);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-transition-icon::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--walnut);
+  border-radius: 2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hero-transition-icon[data-type="zoom"]::after {
+  animation: none;
+  width: 10px; height: 10px;
+  border: 2px solid var(--walnut);
+  background: transparent;
+  border-radius: 50%;
+}
+
+.hero-transition-icon[data-type="fade"]::after {
+  width: 14px; height: 14px;
+  background: var(--walnut);
+  opacity: 0.5;
+  border-radius: 50%;
+}
+
+.hero-transition-icon[data-type="slide-left"]::after {
+  width: 8px; height: 14px;
+  left: 70%;
+  border-radius: 2px;
+}
+
+.hero-transition-icon[data-type="slide-up"]::after {
+  width: 14px; height: 8px;
+  top: 70%;
+  border-radius: 2px;
+}
+
+.hero-transition-icon[data-type="none"]::after {
+  width: 10px; height: 10px;
+  background: var(--walnut-light);
+  border-radius: 0;
+}
+
+.hero-transition-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--walnut-mid);
+  text-transform: uppercase;
+}
+
+.hero-transition-option.active .hero-transition-label,
+.hero-transition-option:has(input:checked) .hero-transition-label {
+  color: var(--walnut);
+}
+
+@media (max-width: 768px) {
+  .hero-transition-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-transition-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hero-preview-image {
+    height: 160px;
+  }
+}

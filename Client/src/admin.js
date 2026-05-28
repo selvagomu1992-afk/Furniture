@@ -1257,6 +1257,7 @@ async function loadHeroSlides() {
           <div>
             <strong>${s.title || 'Untitled'}</strong>
             ${s.subtitle ? `<span style="display:block;font-size:0.72rem;color:var(--walnut-light);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.subtitle}</span>` : ''}
+            <span style="display:inline-block;margin-top:0.2rem;font-size:0.6rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;background:rgba(122,139,111,0.12);color:var(--sage);padding:0.15rem 0.4rem;border-radius:3px;">${s.transition || 'zoom'}</span>
           </div>
         </div>
         <div class="pincode-card-right">
@@ -1275,6 +1276,15 @@ window.deleteHeroSlide = async (id) => {
 };
 
 function heroFormHtml(s) {
+  const transitions = [
+    { value: 'zoom', label: 'Zoom', desc: 'Smooth zoom-in effect' },
+    { value: 'fade', label: 'Fade', desc: 'Crossfade between slides' },
+    { value: 'slide-left', label: 'Slide Left', desc: 'Slides in from right' },
+    { value: 'slide-up', label: 'Slide Up', desc: 'Slides in from bottom' },
+    { value: 'none', label: 'None', desc: 'Instant switch, no animation' },
+  ];
+  const currentTransition = s?.transition || 'zoom';
+
   return `
     <div style="margin-bottom:1rem;">
       <div class="image-upload">
@@ -1290,6 +1300,18 @@ function heroFormHtml(s) {
     <div class="form-group"><label>Image URL</label><input type="url" id="hero-url" class="form-input" value="${s?.imageUrl || ''}" placeholder="https://example.com/image.jpg" oninput="window.heroUrlPreview(this.value)" /></div>
     <div class="form-group"><label>Title / Heading</label><input type="text" id="hero-title" class="form-input" value="${s?.title || ''}" placeholder="e.g. Furniture crafted with soul" /></div>
     <div class="form-group"><label>Description</label><textarea id="hero-subtitle" class="form-input" rows="2" style="resize:vertical;" placeholder="e.g. Handmade to order using sustainably sourced solid woods...">${s?.subtitle || ''}</textarea></div>
+    <div class="form-group">
+      <label>Carousel Transition</label>
+      <div class="hero-transition-grid" id="hero-transition-grid">
+        ${transitions.map(t => `
+          <label class="hero-transition-option ${currentTransition === t.value ? 'active' : ''}">
+            <input type="radio" name="hero-transition" value="${t.value}" ${currentTransition === t.value ? 'checked' : ''} />
+            <span class="hero-transition-icon" data-type="${t.value}"></span>
+            <span class="hero-transition-label">${t.label}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
     <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
       <button class="btn-primary" id="hero-save-btn">${s ? 'Update' : 'Add'}</button>
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
@@ -1329,6 +1351,7 @@ window.uploadHeroImage = () => {
 document.getElementById('add-hero-btn').addEventListener('click', () => {
   heroEditId = null;
   openModal('New Hero Slide', heroFormHtml(null));
+  setupTransitionSelector();
   document.getElementById('hero-save-btn').addEventListener('click', saveHeroSlide);
 });
 
@@ -1339,17 +1362,32 @@ window.editHeroSlide = (id) => {
     const s = d.slides.find(x => x.id === id);
     if (!s) { closeModal(); showToast('Slide not found'); return; }
     document.getElementById('modal-body').innerHTML = heroFormHtml(s);
+    setupTransitionSelector();
     document.getElementById('hero-save-btn').addEventListener('click', saveHeroSlide);
   }).catch(e => { showToast(e.message); closeModal(); });
 };
+
+function setupTransitionSelector() {
+  const grid = document.getElementById('hero-transition-grid');
+  if (!grid) return;
+  grid.querySelectorAll('.hero-transition-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      grid.querySelectorAll('.hero-transition-option').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      opt.querySelector('input[type="radio"]').checked = true;
+    });
+  });
+}
 
 async function saveHeroSlide() {
   const imageUrl = document.getElementById('hero-url')?.value.trim() || document.getElementById('hero-preview')?.getAttribute('src') || '';
   const title = document.getElementById('hero-title')?.value.trim() || '';
   const subtitle = document.getElementById('hero-subtitle')?.value.trim() || '';
+  const transitionEl = document.querySelector('input[name="hero-transition"]:checked');
+  const transition = transitionEl ? transitionEl.value : 'zoom';
   if (!imageUrl || imageUrl === 'No image') { showToast('Please add an image URL or upload a file'); return; }
   try {
-    const body = JSON.stringify({ imageUrl, title, subtitle });
+    const body = JSON.stringify({ imageUrl, title, subtitle, transition });
     if (heroEditId) { await api(`/hero-slides/${heroEditId}`, { method: 'PUT', body }); showToast('Updated'); }
     else { await api('/hero-slides', { method: 'POST', body }); showToast('Added'); }
     closeModal(); loadHeroSlides();
