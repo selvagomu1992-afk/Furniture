@@ -556,18 +556,18 @@ import{t as e}from"./config-DDSCtEQs.js";var t=`${e}/api/admin`;function n(){ret
           ${e.imageUrl?`<img src="${e.imageUrl}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />`:`<div style="width:60px;height:40px;border-radius:4px;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--walnut-light);">No img</div>`}
           <div>
             <strong>${e.name}</strong>
-            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${e.order} · ${e.active?`Active`:`Inactive`}</span>
+            <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${e.order} · ${e.active?`Active`:`Inactive`}${e.featured?` · Carousel #${e.featuredOrder}`:``}</span>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
-          ${e.featured?`<span style="background:var(--terracotta);color:#fff;font-size:0.6rem;padding:2px 6px;border-radius:4px;font-weight:600;letter-spacing:0.05em;">FEATURED</span>`:``}
+          <button class="btn-table btn-secondary" onclick="toggleFeatured('${e.id}', ${!e.featured})" style="font-size:0.65rem;padding:0.25rem 0.5rem;${e.featured?`background:var(--terracotta);color:#fff;border-color:var(--terracotta);`:``}">${e.featured?`★ Featured`:`☆ Feature`}</button>
           <div class="pincode-card-right">
             <button class="btn-secondary btn-table" onclick="editFeaturedType('${e.id}')">Edit</button>
             <button class="btn-danger btn-table" onclick="deleteFeaturedType('${e.id}')">Delete</button>
           </div>
         </div>
       </div>
-    `).join(``)}catch(e){i(`Carousel: `+e.message)}}window.deleteFeaturedType=async e=>{if(confirm(`Delete this type?`))try{await u(`/featured-types/${e}`,{method:`DELETE`}),i(`Deleted`),I()}catch(e){i(e.message)}};function L(e){return`
+    `).join(``)}catch(e){i(`Carousel: `+e.message)}}window.deleteFeaturedType=async e=>{if(confirm(`Delete this type?`))try{await u(`/featured-types/${e}`,{method:`DELETE`}),i(`Deleted`),I()}catch(e){i(e.message)}},window.toggleFeatured=async(e,t)=>{try{await u(`/featured-types/${e}`,{method:`PUT`,body:JSON.stringify({featured:t})}),i(t?`Added to carousel`:`Removed from carousel`),I()}catch(e){i(e.message)}};function L(e){return`
     <div style="margin-bottom:1rem;">
       <div class="image-upload">
         <div class="image-upload-preview">
@@ -582,12 +582,12 @@ import{t as e}from"./config-DDSCtEQs.js";var t=`${e}/api/admin`;function n(){ret
     <div class="form-group"><label>Name</label><input type="text" id="ft-name" class="form-input" value="${e?.name||``}" /></div>
     <div class="form-group"><label>Description</label><input type="text" id="ft-desc" class="form-input" value="${e?.description||``}" /></div>
     <div class="form-group"><label>Order</label><input type="number" id="ft-order" class="form-input" value="${e?.order??0}" min="0" /></div>
-    <div class="form-group" style="border:1px solid var(--cream-mid);border-radius:6px;padding:0.75rem;">
+      <div class="form-group" style="border:1px solid var(--cream-mid);border-radius:6px;padding:0.75rem;">
       <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;font-weight:600;margin-bottom:0.5rem;">
         <input type="checkbox" id="ft-featured" ${e?.featured?`checked`:``} /> Show in homepage carousel
       </label>
       <p style="font-size:0.75rem;color:var(--walnut-light);margin:0;">Maximum 5 types can be featured. Only featured types appear on the homepage.</p>
-      <div class="form-group" style="margin:0.5rem 0 0;" id="ft-featured-order-group" ${e?.featured?``:`style="display:none;margin:0.5rem 0 0;"`}>
+      <div class="form-group" style="display:${e?.featured?`block`:`none`};margin:0.5rem 0 0;" id="ft-featured-order-group">
         <label style="font-size:0.75rem;">Carousel Order</label>
         <input type="number" id="ft-featured-order" class="form-input" value="${e?.featuredOrder??0}" min="0" step="1" style="width:80px;" />
       </div>
