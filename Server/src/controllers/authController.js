@@ -77,6 +77,18 @@ export const login = asyncHandler(async (req, res) => {
     return res.status(401).json({ success: false, message: 'Invalid email or password' });
   }
 
+  // Fire login notification in background
+  await inngest.send({
+    name: 'user/logged-in',
+    data: {
+      email: user.email,
+      firstName: user.firstName,
+      loginTime: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }),
+      ipAddress: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || req.ip,
+      userAgent: req.headers['user-agent'] || 'Unknown',
+    },
+  });
+
   sendTokenResponse(user, 200, res);
 });
 

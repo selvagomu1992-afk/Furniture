@@ -141,8 +141,62 @@ export const sendPasswordResetEmail = inngest.createFunction(
   }
 );
 
+// ─── LOGIN NOTIFICATION EMAIL ───────────────────
+export const sendLoginNotification = inngest.createFunction(
+  { id: 'send-login-notification', name: 'Send Login Notification', triggers: { event: 'user/logged-in' } },
+  async ({ event, step }) => {
+    const { email, firstName, loginTime, ipAddress, userAgent } = event.data;
+
+    await step.run('send-login-email', async () => {
+      await transporter.sendMail({
+        from: process.env.EMAIL_FROM,
+        to: email,
+        subject: 'New Sign-In to Your Jangid Account',
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <body style="font-family:'Georgia',serif;background:#F5F0E8;margin:0;padding:0;">
+            <div style="max-width:520px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;">
+              <div style="background:#2C1810;padding:28px 36px;text-align:center;">
+                <h1 style="color:#F5F0E8;font-size:1.2rem;font-weight:300;letter-spacing:0.06em;margin:0;">JANGID</h1>
+              </div>
+              <div style="padding:40px;">
+                <h2 style="font-size:1.5rem;font-weight:400;color:#2C1810;margin:0 0 16px;">New Sign-In Detected</h2>
+                <p style="color:#4A2E1E;line-height:1.8;margin-bottom:24px;">Hi ${firstName}, we noticed a new sign-in to your Jangid account.</p>
+                <table style="width:100%;border-collapse:collapse;margin-bottom:28px;">
+                  <tr style="border-bottom:1px solid #E8DFD0;">
+                    <td style="padding:10px 0;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7A4F36;">Time</td>
+                    <td style="padding:10px 0;text-align:right;color:#2C1810;">${loginTime}</td>
+                  </tr>
+                  <tr style="border-bottom:1px solid #E8DFD0;">
+                    <td style="padding:10px 0;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7A4F36;">IP Address</td>
+                    <td style="padding:10px 0;text-align:right;color:#2C1810;">${ipAddress || 'Unknown'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7A4F36;">Device</td>
+                    <td style="padding:10px 0;text-align:right;color:#2C1810;font-size:0.82rem;">${userAgent || 'Unknown'}</td>
+                  </tr>
+                </table>
+                <p style="color:#4A2E1E;line-height:1.8;margin-bottom:28px;">If this was you, no action is needed. If you didn't sign in, please reset your password immediately.</p>
+                <a href="${process.env.CLIENT_URL}/login.html" style="display:inline-block;background:#C4714A;color:#fff;padding:14px 32px;border-radius:6px;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;font-family:'Inter',sans-serif;">Secure My Account</a>
+              </div>
+              <div style="padding:20px 40px;border-top:1px solid #E8DFD0;color:#7A4F36;font-size:0.72rem;line-height:1.6;">
+                <p style="margin:0;">If you didn't attempt to sign in, please contact us immediately.</p>
+              </div>
+            </div>
+          </body>
+          </html>
+        `,
+      });
+    });
+
+    return { sent: true, email };
+  }
+);
+
 export const inngestFunctions = [
   sendWelcomeEmail,
   sendOrderConfirmation,
   sendPasswordResetEmail,
+  sendLoginNotification,
 ];
