@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import prisma from '../config/db.js';
-import { inngest } from '../inngest/client.js';
 import transporter from '../config/mailer.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
