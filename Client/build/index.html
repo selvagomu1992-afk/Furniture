@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jangid — Handcrafted Furniture, Made to Order</title>
+    <meta name="description" content="Jangid crafts bespoke, heirloom-quality furniture using sustainably sourced solid woods and premium upholstery. Each piece is made to order in our artisan workshop." />
+    <meta name="keywords" content="handcrafted furniture, bespoke furniture, custom furniture, solid wood furniture, luxury furniture manufacturing" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script type="module" crossorigin src="/assets/main-CPSoP4up.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/config-DDSCtEQs.js">
+    <link rel="stylesheet" crossorigin href="/assets/main-BSvKOB2D.css">
+  </head>
+  <body>
+    <div id="cursor" class="custom-cursor"></div>
+    <div id="cursor-follower" class="cursor-follower"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="navbar">
+      <div class="nav-inner">
+        <a href="#home" class="nav-logo" id="nav-logo-link">
+          <span class="logo-mark">J</span>
+          <span class="logo-text">JANGID</span>
+        </a>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#collections" class="nav-link" id="nav-collections">Collections</a></li>
+          <li><a href="#story" class="nav-link" id="nav-story">Our Story</a></li>
+          <li><a href="#process" class="nav-link" id="nav-process">Process</a></li>
+          <li><a href="#order" class="nav-link" id="nav-order">Order</a></li>
+          <li><a href="#contact" class="nav-link" id="nav-contact">Contact</a></li>
+        </ul>
+        <!-- Navbar Search -->
+        <div class="nav-search" id="nav-search">
+          <button class="nav-search-toggle" id="nav-search-toggle" aria-label="Toggle search" aria-expanded="false">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <div class="nav-search-box" id="nav-search-box" role="search">
+            <svg class="nav-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="nav-search-input" class="nav-search-input" placeholder="Search collections…" autocomplete="off" />
+            <button class="nav-search-clear" id="nav-search-clear" aria-label="Clear search">✕</button>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <a href="/login.html" class="nav-signin-btn" id="nav-signin-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Sign In
+          </a>
+          <button class="cart-btn" id="cart-btn" aria-label="Open cart">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="cart-count" id="cart-count">0</span>
+          </button>
+          <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+      <ul>
+        <li><a href="#collections" class="mobile-link" id="mob-collections">Collections</a></li>
+        <li><a href="#story" class="mobile-link" id="mob-story">Our Story</a></li>
+        <li><a href="#process" class="mobile-link" id="mob-process">Process</a></li>
+        <li><a href="#order" class="mobile-link" id="mob-order">Order Now</a></li>
+        <li><a href="#contact" class="mobile-link" id="mob-contact">Contact</a></li>
+        <li><a href="/login.html" class="mobile-link mobile-signin" id="mob-signin">Sign In →</a></li>
+      </ul>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <aside class="cart-sidebar" id="cart-sidebar">
+      <div class="cart-header">
+        <h3>Your Order</h3>
+        <button class="cart-close" id="cart-close" aria-label="Close cart">✕</button>
+      </div>
+      <div class="cart-items" id="cart-items">
+        <div class="cart-empty" id="cart-empty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <p>Your order is empty</p>
+          <span>Explore our collections to begin</span>
+        </div>
+      </div>
+      <div class="cart-footer" id="cart-footer" style="display:none;">
+        <div class="cart-total">
+          <span>Estimated Total</span>
+          <span id="cart-total-price">$0</span>
+        </div>
+        <a href="#order" class="btn-primary cart-checkout-btn" id="cart-checkout-btn">Proceed to Order</a>
+      </div>
+    </aside>
+
+    <main id="app">
+      <!-- Hero Section -->
+      <section id="home" class="hero-section">
+        <div class="hero-image-wrap">
+          <img src="/hero.png" alt="Luxury handcrafted living room furniture by Jangid" class="hero-bg-img" id="hero-bg-img" />
+          <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+          <div class="hero-tag reveal-up">Est. 2009 · Artisan Workshop</div>
+          <h1 class="hero-title reveal-up">
+            <span>Furniture</span>
+            <span class="italic">crafted</span>
+            <span>with soul.</span>
+          </h1>
+          <p class="hero-subtitle reveal-up">Every piece tells a story. Handmade to order using sustainably sourced solid woods and premium upholstery — built to be passed down through generations.</p>
+          <div class="hero-actions reveal-up">
+            <a href="#collections" class="btn-primary" id="hero-explore-btn">Explore Collections</a>
+            <a href="#order" class="btn-ghost" id="hero-order-btn">Commission a Piece</a>
+          </div>
+        </div>
+        <div class="hero-scroll-hint">
+          <span>Scroll</span>
+          <div class="scroll-line"></div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat reveal-up">
+            <span class="stat-num" id="stat-pieces">0</span><span class="stat-suffix">+</span>
+            <span class="stat-label">Pieces Crafted</span>
+          </div>
+          <div class="stat reveal-up">
+            <span class="stat-num" id="stat-years">0</span><span class="stat-suffix">yrs</span>
+            <span class="stat-label">Of Craftsmanship</span>
+          </div>
+          <div class="stat reveal-up">
+            <span class="stat-num" id="stat-clients">0</span><span class="stat-suffix">+</span>
+            <span class="stat-label">Happy Clients</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Marquee Banner -->
+      <div class="marquee-wrap">
+        <div class="marquee-track">
+          <span>Solid Walnut</span><span class="sep">·</span>
+          <span>Premium Oak</span><span class="sep">·</span>
+          <span>Sustainably Sourced</span><span class="sep">·</span>
+          <span>Made to Order</span><span class="sep">·</span>
+          <span>Heirloom Quality</span><span class="sep">·</span>
+          <span>15-Year Guarantee</span><span class="sep">·</span>
+          <span>Solid Walnut</span><span class="sep">·</span>
+          <span>Premium Oak</span><span class="sep">·</span>
+          <span>Sustainably Sourced</span><span class="sep">·</span>
+          <span>Made to Order</span><span class="sep">·</span>
+          <span>Heirloom Quality</span><span class="sep">·</span>
+          <span>15-Year Guarantee</span><span class="sep">·</span>
+        </div>
+      </div>
+
+      <!-- Collections Section -->
+      <section id="collections" class="collections-section">
+        <div class="section-header reveal-up">
+          <span class="section-tag">Our Work</span>
+          <h2 class="section-title">Curated Collections</h2>
+          <p class="section-desc">From intimate reading chairs to grand dining tables, each collection embodies a distinct aesthetic — all united by uncompromising craftsmanship.</p>
+        </div>
+        <div class="filter-bar reveal-up">
+          <button class="filter-btn active" data-filter="all" id="filter-all">All</button>
+          <button class="filter-btn" data-filter="living" id="filter-living">Living</button>
+          <button class="filter-btn" data-filter="dining" id="filter-dining">Dining</button>
+          <button class="filter-btn" data-filter="bedroom" id="filter-bedroom">Bedroom</button>
+          <button class="filter-btn" data-filter="office" id="filter-office">Office</button>
+        </div>
+        <div class="products-grid" id="products-grid">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+      <!-- Story Section -->
+      <section id="story" class="story-section">
+        <div class="story-grid">
+          <div class="story-image-col reveal-left">
+            <div class="story-img-wrap">
+              <img src="/workshop.png" alt="Jangid artisan workshop craftsmen at work" class="story-main-img" />
+              <div class="story-img-badge">
+                <span>Since</span>
+                <strong>2009</strong>
+              </div>
+            </div>
+          </div>
+          <div class="story-text-col reveal-right">
+            <span class="section-tag">Our Story</span>
+            <h2 class="section-title">Born in a workshop.<br /><em>Built for lifetimes.</em></h2>
+            <p>Jangid began when master carpenter Aldric Voss set up a small workshop in Vermont with a singular obsession: furniture that could outlast its maker.</p>
+            <p>Today, our team of 23 artisans works across 8,000 sq ft of studio space, blending time-honoured joinery techniques with contemporary design sensibility.</p>
+            <p>Every piece is made to order. Every order, personal. We don't keep inventory — we keep craft.</p>
+            <div class="story-values">
+              <div class="value-item">
+                <span class="value-icon">🌿</span>
+                <div>
+                  <strong>Sustainably Sourced</strong>
+                  <p>FSC-certified timber from responsible forests</p>
+                </div>
+              </div>
+              <div class="value-item">
+                <span class="value-icon">🔨</span>
+                <div>
+                  <strong>Hand-Finished</strong>
+                  <p>Every surface touched by human hands, never a machine</p>
+                </div>
+              </div>
+              <div class="value-item">
+                <span class="value-icon">🛡️</span>
+                <div>
+                  <strong>15-Year Guarantee</strong>
+                  <p>We stand behind every joint and every seam</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Process Section -->
+      <section id="process" class="process-section">
+        <div class="section-header reveal-up">
+          <span class="section-tag">How It Works</span>
+          <h2 class="section-title">From concept to creation</h2>
+        </div>
+        <div class="process-steps">
+          <div class="process-step reveal-up" id="step-1">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h3>Configure & Order</h3>
+              <p>Choose your piece, select materials, finishes, and dimensions. Our online configurator gives you a live price estimate — or speak to a designer directly.</p>
+            </div>
+          </div>
+          <div class="process-connector"></div>
+          <div class="process-step reveal-up" id="step-2">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h3>Crafted by Hand</h3>
+              <p>Your piece enters our workshop queue. A dedicated artisan builds it from scratch using traditional joinery, hand-applied finishes, and premium upholstery.</p>
+            </div>
+          </div>
+          <div class="process-connector"></div>
+          <div class="process-step reveal-up" id="step-3">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <h3>White Glove Delivery</h3>
+              <p>Your furniture is carefully wrapped, shipped with full insurance, and installed by our delivery team. We only leave when you're completely satisfied.</p>
+            </div>
+          </div>
+        </div>
+        <div class="process-timeline-note reveal-up">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Typical lead time: <strong>6–10 weeks</strong> from order confirmation
+        </div>
+      </section>
+
+      <!-- Order Section -->
+      <section id="order" class="order-section">
+        <div class="order-inner">
+          <div class="order-header reveal-up">
+            <span class="section-tag">Commission a Piece</span>
+            <h2 class="section-title">Place Your Order</h2>
+            <p class="section-desc">Complete the form below to begin your commission. We'll review your specifications and confirm within 48 hours.</p>
+          </div>
+
+          <!-- Multi-step Form -->
+          <div class="order-form-wrap reveal-up">
+            <div class="form-progress">
+              <div class="progress-step active" id="prog-1" data-step="1">
+                <span class="prog-num">1</span>
+                <span class="prog-label">Select Piece</span>
+              </div>
+              <div class="progress-line"></div>
+              <div class="progress-step" id="prog-2" data-step="2">
+                <span class="prog-num">2</span>
+                <span class="prog-label">Customise</span>
+              </div>
+              <div class="progress-line"></div>
+              <div class="progress-step" id="prog-3" data-step="3">
+                <span class="prog-num">3</span>
+                <span class="prog-label">Your Details</span>
+              </div>
+              <div class="progress-line"></div>
+              <div class="progress-step" id="prog-4" data-step="4">
+                <span class="prog-num">4</span>
+                <span class="prog-label">Review</span>
+              </div>
+            </div>
+
+            <form id="order-form" novalidate>
+              <!-- Step 1: Select Piece -->
+              <div class="form-step active" id="form-step-1">
+                <h3 class="step-title">Choose your furniture piece</h3>
+                <div class="piece-selector" id="piece-selector">
+                  <!-- Injected by JS -->
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn-primary step-next" id="step1-next" data-next="2">Continue →</button>
+                </div>
+              </div>
+
+              <!-- Step 2: Customise -->
+              <div class="form-step" id="form-step-2">
+                <h3 class="step-title">Customise your piece</h3>
+                <div class="customise-grid">
+                  <div class="form-group">
+                    <label for="material-select">Wood Material</label>
+                    <select id="material-select" class="form-select" name="material">
+                      <option value="walnut" data-price="0">Solid Walnut (standard)</option>
+                      <option value="oak" data-price="-200">White Oak (-$200)</option>
+                      <option value="ash" data-price="-300">Solid Ash (-$300)</option>
+                      <option value="maple" data-price="-150">Hard Maple (-$150)</option>
+                      <option value="ebony" data-price="500">Ebonised Oak (+$500)</option>
+                      <option value="rosewood" data-price="800">Rosewood (+$800)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Finish</label>
+                    <div class="finish-options" id="finish-options">
+                      <label class="finish-opt active" id="finish-natural">
+                        <input type="radio" name="finish" value="natural" checked />
+                        <span class="finish-swatch natural"></span>
+                        Natural
+                      </label>
+                      <label class="finish-opt" id="finish-medium">
+                        <input type="radio" name="finish" value="medium" />
+                        <span class="finish-swatch medium"></span>
+                        Medium
+                      </label>
+                      <label class="finish-opt" id="finish-dark">
+                        <input type="radio" name="finish" value="dark" />
+                        <span class="finish-swatch dark"></span>
+                        Dark
+                      </label>
+                      <label class="finish-opt" id="finish-ebony">
+                        <input type="radio" name="finish" value="ebony" />
+                        <span class="finish-swatch ebony-finish"></span>
+                        Ebony
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-group" id="upholstery-group">
+                    <label for="upholstery-select">Upholstery (if applicable)</label>
+                    <select id="upholstery-select" class="form-select" name="upholstery">
+                      <option value="none">None / N/A</option>
+                      <option value="cream-linen" data-price="0">Cream Linen (standard)</option>
+                      <option value="slate-velvet" data-price="200">Slate Velvet (+$200)</option>
+                      <option value="camel-leather" data-price="450">Camel Leather (+$450)</option>
+                      <option value="bouclé" data-price="350">Ivory Bouclé (+$350)</option>
+                      <option value="forest-velvet" data-price="200">Forest Green Velvet (+$200)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="dimension-select">Size / Dimension</label>
+                    <select id="dimension-select" class="form-select" name="dimension">
+                      <option value="small" data-price="-300">Small / Compact (-$300)</option>
+                      <option value="standard" data-price="0">Standard (as shown)</option>
+                      <option value="large" data-price="350">Large (+$350)</option>
+                      <option value="custom" data-price="600">Custom Dimensions (+$600)</option>
+                    </select>
+                  </div>
+                  <div class="form-group full-width" id="custom-dims-group" style="display:none;">
+                    <label for="custom-dimensions">Specify Custom Dimensions</label>
+                    <input type="text" id="custom-dimensions" name="custom_dimensions" class="form-input" placeholder="e.g. W 220cm × D 90cm × H 78cm" />
+                  </div>
+                  <div class="form-group full-width">
+                    <label for="special-notes">Special Requests / Notes</label>
+                    <textarea id="special-notes" name="notes" class="form-textarea" rows="3" placeholder="e.g. Left-hand configuration, additional drawer, specific leg height..."></textarea>
+                  </div>
+                </div>
+                <div class="price-estimate-bar">
+                  <div>
+                    <span class="price-label">Estimated Price</span>
+                    <span class="price-note">Final quote confirmed within 48h</span>
+                  </div>
+                  <div class="price-amount" id="price-estimate">$2,450</div>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn-ghost step-prev" id="step2-prev" data-prev="1">← Back</button>
+                  <button type="button" class="btn-primary step-next" id="step2-next" data-next="3">Continue →</button>
+                </div>
+              </div>
+
+              <!-- Step 3: Customer Details -->
+              <div class="form-step" id="form-step-3">
+                <h3 class="step-title">Your details</h3>
+                <!-- Guest notice — hidden for logged-in users by JS -->
+                <div id="order-guest-notice" class="order-guest-notice" style="display:none;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  <span>You're not signed in. <a href="/login.html" class="order-guest-link">Sign in</a> to save &amp; track your order, or continue as a guest to submit a quote request.</span>
+                </div>
+                <div class="details-grid">
+                  <div class="form-group">
+                    <label for="first-name">First Name *</label>
+                    <input type="text" id="first-name" name="first_name" class="form-input" placeholder="Aldric" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="last-name">Last Name *</label>
+                    <input type="text" id="last-name" name="last_name" class="form-input" placeholder="Voss" required />
+                  </div>
+                  <div class="form-group full-width">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 000-0000" />
+                  </div>
+                  <div class="form-group">
+                    <label for="country-select">Country *</label>
+                    <select id="country-select" name="country" class="form-select" required>
+                      <option value="">Select country...</option>
+                      <option value="us">United States</option>
+                      <option value="uk">United Kingdom</option>
+                      <option value="ca">Canada</option>
+                      <option value="au">Australia</option>
+                      <option value="de">Germany</option>
+                      <option value="fr">France</option>
+                      <option value="in">India</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div class="form-group full-width">
+                    <label for="address">Delivery Address *</label>
+                    <input type="text" id="address" name="address" class="form-input" placeholder="Street address, city, state, ZIP" required />
+                  </div>
+                  <div class="form-group full-width">
+                    <label for="timeline-select">Preferred Lead Time</label>
+                    <select id="timeline-select" name="timeline" class="form-select">
+                      <option value="standard">Standard (6–10 weeks)</option>
+                      <option value="priority" data-price="500">Priority (4–6 weeks, +$500)</option>
+                      <option value="flexible">Flexible (no rush)</option>
+                    </select>
+                  </div>
+                  <div class="form-group full-width checkbox-group">
+                    <label class="checkbox-label" for="newsletter-check">
+                      <input type="checkbox" id="newsletter-check" name="newsletter" />
+                      <span>Send me updates on new collections and exclusive offers</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn-ghost step-prev" id="step3-prev" data-prev="2">← Back</button>
+                  <button type="button" class="btn-primary step-next" id="step3-next" data-next="4">Review Order →</button>
+                </div>
+              </div>
+
+              <!-- Step 4: Review & Submit -->
+              <div class="form-step" id="form-step-4">
+                <h3 class="step-title">Review your commission</h3>
+                <div class="review-card" id="review-card">
+                  <!-- Injected by JS -->
+                </div>
+                <div class="form-group full-width" style="margin-top:1.5rem;">
+                  <label class="checkbox-label" for="terms-check">
+                    <input type="checkbox" id="terms-check" name="terms" required />
+                    <span>I agree to the <a href="#contact" class="inline-link">Terms & Conditions</a> and understand that orders are non-refundable after production begins.</span>
+                  </label>
+                </div>
+                <div class="form-actions" style="margin-top:1.5rem;">
+                  <button type="button" class="btn-ghost step-prev" id="step4-prev" data-prev="3">← Back</button>
+                  <button type="submit" class="btn-primary btn-submit" id="submit-order">
+                    <span>Submit Commission</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 5: Success -->
+              <div class="form-step" id="form-step-success" style="display:none;">
+                <div class="success-screen">
+                  <div class="success-icon">✓</div>
+                  <h3>Commission Received!</h3>
+                  <p>Thank you for your order. Our team will review your specifications and reach out within <strong>48 hours</strong> with a full quote and timeline confirmation.</p>
+                  <p class="success-ref">Reference: <strong id="order-ref"></strong></p>
+                  <a href="#collections" class="btn-primary" id="success-browse-btn">Browse More Collections</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials Section -->
+      <section id="testimonials" class="testimonials-section">
+        <div class="section-header reveal-up">
+          <span class="section-tag">Client Stories</span>
+          <h2 class="section-title">What our clients say</h2>
+        </div>
+        <div class="testimonials-track-wrap">
+          <div class="testimonials-track" id="testimonials-track">
+            <div class="testimonial-card" id="test-1">
+              <div class="test-stars">★★★★★</div>
+              <blockquote>"The walnut dining table is the centrepiece of our home. Guests always ask about it. Worth every penny and every week of waiting."</blockquote>
+              <div class="test-author">
+                <div class="test-avatar" style="background:#C4714A;">E</div>
+                <div>
+                  <strong>Eleanor Marsh</strong>
+                  <span>Brooklyn, New York</span>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-card" id="test-2">
+              <div class="test-stars">★★★★★</div>
+              <blockquote>"I've commissioned three pieces over five years. The consistency of quality is extraordinary. Jangid has ruined me for flat-pack furniture forever."</blockquote>
+              <div class="test-author">
+                <div class="test-avatar" style="background:#7A8B6F;">J</div>
+                <div>
+                  <strong>James Kowalski</strong>
+                  <span>London, UK</span>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-card" id="test-3">
+              <div class="test-stars">★★★★★</div>
+              <blockquote>"The custom dimensions for my reading nook were perfect. The process was transparent, the team communicative, and the armchair exceeded my expectations."</blockquote>
+              <div class="test-author">
+                <div class="test-avatar" style="background:#D4A853;">S</div>
+                <div>
+                  <strong>Sophia Laurent</strong>
+                  <span>Paris, France</span>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-card" id="test-4">
+              <div class="test-stars">★★★★★</div>
+              <blockquote>"As an interior designer, I recommend Jangid to every high-end client. The level of detail in joinery and finishing is genuinely unmatched in this price range."</blockquote>
+              <div class="test-author">
+                <div class="test-avatar" style="background:#2C1810;color:#F5F0E8;">M</div>
+                <div>
+                  <strong>Marcus Chen</strong>
+                  <span>Interior Designer, Singapore</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-controls">
+            <button class="test-btn" id="test-prev" aria-label="Previous testimonial">←</button>
+            <div class="test-dots" id="test-dots"></div>
+            <button class="test-btn" id="test-next" aria-label="Next testimonial">→</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contact" class="contact-section">
+        <div class="contact-grid">
+          <div class="contact-info reveal-left">
+            <span class="section-tag">Get in Touch</span>
+            <h2 class="section-title">Let's talk about<br /><em>your vision.</em></h2>
+            <p>Whether you have a specific piece in mind or need design guidance, our team is here to help translate your vision into a handcrafted reality.</p>
+            <div class="contact-details">
+              <div class="contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span id="contact-address">12 Artisan Lane, Burlington, Vermont, VT 05401</span>
+              </div>
+              <div class="contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.7 3.38 2 2 0 0 1 3.68 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span id="contact-phone">+1 (802) 555-0147</span>
+              </div>
+              <div class="contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span id="contact-email">studio@jangid.com</span>
+              </div>
+              <div class="contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Mon–Fri: 9am – 6pm EST</span>
+              </div>
+            </div>
+          </div>
+          <div class="contact-form-wrap reveal-right">
+            <form id="contact-form" class="contact-form" novalidate>
+              <div class="form-group">
+                <label for="c-name">Your Name</label>
+                <input type="text" id="c-name" name="name" class="form-input" placeholder="Full name" />
+              </div>
+              <div class="form-group">
+                <label for="c-email">Email Address</label>
+                <input type="email" id="c-email" name="email" class="form-input" placeholder="you@example.com" />
+              </div>
+              <div class="form-group">
+                <label for="c-subject">Subject</label>
+                <select id="c-subject" name="subject" class="form-select">
+                  <option value="order">Order Enquiry</option>
+                  <option value="custom">Custom Commission</option>
+                  <option value="trade">Trade / Designer Programme</option>
+                  <option value="warranty">Warranty & Aftercare</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="c-message">Message</label>
+                <textarea id="c-message" name="message" class="form-textarea" rows="4" placeholder="Tell us about your project..."></textarea>
+              </div>
+              <button type="submit" class="btn-primary" id="contact-submit-btn" style="width:100%;">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="logo-mark">J</span>
+          <span class="logo-text">JANGID</span>
+          <p>Handcrafted furniture, made to order.<br />Built to last a lifetime.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Collections</h4>
+            <ul>
+              <li><a href="#collections" id="f-living">Living Room</a></li>
+              <li><a href="#collections" id="f-dining">Dining</a></li>
+              <li><a href="#collections" id="f-bedroom">Bedroom</a></li>
+              <li><a href="#collections" id="f-office">Home Office</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#story" id="f-story">Our Story</a></li>
+              <li><a href="#process" id="f-process">Process</a></li>
+              <li><a href="#contact" id="f-contact">Contact</a></li>
+              <li><a href="#order" id="f-order">Commission</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="#contact" id="f-warranty">Warranty</a></li>
+              <li><a href="#contact" id="f-care">Care Guide</a></li>
+              <li><a href="#contact" id="f-trade">Trade Programme</a></li>
+              <li><a href="#contact" id="f-shipping">Shipping Info</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Jangid. All rights reserved.</p>
+        <div class="footer-social">
+          <a href="#" class="social-link" id="social-instagram" aria-label="Instagram">IG</a>
+          <a href="#" class="social-link" id="social-pinterest" aria-label="Pinterest">PT</a>
+          <a href="#" class="social-link" id="social-houzz" aria-label="Houzz">HZ</a>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>
