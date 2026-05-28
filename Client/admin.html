@@ -12,6 +12,21 @@
 </head>
 <body>
   <div class="admin-layout">
+    <!-- Mobile header (visible only on mobile) -->
+    <div class="mobile-admin-header" id="mobile-admin-header">
+      <button class="mobile-hamburger" id="mobile-hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="mobile-admin-brand">
+        <div class="sidebar-logo" style="width:28px;height:28px;font-size:0.85rem;">J</div>
+        <span style="font-size:0.65rem;font-weight:600;letter-spacing:0.22em;opacity:0.6;">JANGID</span>
+      </div>
+      <span class="admin-badge" style="margin-left:auto;">Admin</span>
+    </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">

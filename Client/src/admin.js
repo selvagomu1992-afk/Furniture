@@ -88,6 +88,19 @@ document.getElementById('modal-overlay').addEventListener('click', closeModal);
   } catch { window.location.href = '/login.html'; }
 })();
 
+// ─── Mobile sidebar toggle ────────────────────
+function closeSidebar() {
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sidebar-overlay')?.classList.remove('open');
+  document.getElementById('mobile-hamburger')?.classList.remove('open');
+}
+document.getElementById('mobile-hamburger')?.addEventListener('click', () => {
+  document.getElementById('sidebar')?.classList.toggle('open');
+  document.getElementById('sidebar-overlay')?.classList.toggle('open');
+  document.getElementById('mobile-hamburger')?.classList.toggle('open');
+});
+document.getElementById('sidebar-overlay')?.addEventListener('click', closeSidebar);
+
 // ─── Navigation ──────────────────────────────
 document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -97,6 +110,7 @@ document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
     const section = document.getElementById(`section-${btn.dataset.section}`);
     if (section) section.classList.add('active');
     if (btn.dataset.section === 'counterbill') loadCounterBill();
+    closeSidebar();
   });
 });
 
