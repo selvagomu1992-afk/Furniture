@@ -1548,7 +1548,7 @@ window.uploadFtImage = () => {
   input.click();
 };
 
-document.getElementById('add-featured-btn').addEventListener('click', () => {
+document.getElementById('add-featured-btn')?.addEventListener('click', () => {
   featuredEditId = null;
   openModal('New Featured Type', featuredFormHtml(null));
   document.getElementById('ft-save-btn').addEventListener('click', saveFeaturedType);
