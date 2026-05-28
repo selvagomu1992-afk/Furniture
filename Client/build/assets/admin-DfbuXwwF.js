@@ -90,8 +90,7 @@ import{t as e}from"./config-DDSCtEQs.js";var t=`${e}/api/admin`;function n(){ret
           <div class="action-group">
             <button class="btn-secondary" onclick="viewOrder('${e.id}')">View</button>
             <button class="btn-secondary" onclick="updateStatus('${e.id}')">Status</button>
-            <button class="btn-secondary" onclick="printInvoice('${e.id}')">Invoice</button>
-            <button class="btn-secondary" onclick="companyInvoice('${e.id}')">Co. Invoice</button>
+            <button class="btn-primary" onclick="printInvoice('${e.id}')" style="font-size:0.7rem;padding:0.4rem 0.8rem;">Invoice</button>
           </div>
         </td>
       </tr>
