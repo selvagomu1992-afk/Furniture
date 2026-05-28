@@ -294,8 +294,9 @@ input, select, textarea, button { font-family: inherit; font-size: inherit; }
   .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius); }
   .data-table { min-width: 580px; }
   .data-table th, .data-table td { padding: 0.6rem 0.75rem; font-size: 0.75rem; }
-  .action-group { flex-wrap: wrap; gap: 0.35rem; }
+  .action-group { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 0.35rem; align-items: center; }
   .action-group .btn-secondary, .action-group .btn-danger { font-size: 0.65rem; padding: 0.3rem 0.5rem; }
+  .action-group .order-invoice-btn { display: none; }
 
   /* ── Forms ── */
   .admin-form { gap: 1rem; padding: 1.25rem; max-width: 100%; }

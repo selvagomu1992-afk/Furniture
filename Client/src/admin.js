@@ -461,7 +461,7 @@ async function loadOrders() {
           <div class="action-group">
             <button class="btn-secondary" onclick="viewOrder('${o.id}')">View</button>
             <button class="btn-secondary" onclick="updateStatus('${o.id}')">Status</button>
-            <button class="btn-primary" onclick="printInvoice('${o.id}')" style="font-size:0.7rem;padding:0.4rem 0.8rem;">Invoice</button>
+            <button class="btn-primary order-invoice-btn" onclick="printInvoice('${o.id}')" style="font-size:0.7rem;padding:0.4rem 0.8rem;">Invoice</button>
           </div>
         </td>
       </tr>
