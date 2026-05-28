@@ -1317,7 +1317,12 @@ async function loadFeaturedTypes() {
       container.innerHTML = '<p class="muted">No featured types yet. Click "+ Add Type" to add one.</p>';
       return;
     }
-    container.innerHTML = data.types.map(t => `
+    const featuredCount = data.types.filter(t => t.featured).length;
+    const heading = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+      <strong>All Types</strong>
+      <span style="font-size:0.8rem;color:var(--walnut-light);">Featured: ${featuredCount}/5</span>
+    </div>`;
+    container.innerHTML = heading + data.types.map(t => `
       <div class="pincode-card" style="margin-bottom:0.5rem;">
         <div style="display:flex;align-items:center;gap:0.75rem;">
           ${t.imageUrl ? `<img src="${t.imageUrl}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:var(--cream-dark);" />` : '<div style="width:60px;height:40px;border-radius:4px;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--walnut-light);">No img</div>'}
@@ -1326,9 +1331,12 @@ async function loadFeaturedTypes() {
             <span style="display:block;font-size:0.75rem;color:var(--walnut-light);">Order ${t.order} · ${t.active ? 'Active' : 'Inactive'}</span>
           </div>
         </div>
-        <div class="pincode-card-right">
-          <button class="btn-secondary btn-table" onclick="editFeaturedType('${t.id}')">Edit</button>
-          <button class="btn-danger btn-table" onclick="deleteFeaturedType('${t.id}')">Delete</button>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          ${t.featured ? '<span style="background:var(--terracotta);color:#fff;font-size:0.6rem;padding:2px 6px;border-radius:4px;font-weight:600;letter-spacing:0.05em;">FEATURED</span>' : ''}
+          <div class="pincode-card-right">
+            <button class="btn-secondary btn-table" onclick="editFeaturedType('${t.id}')">Edit</button>
+            <button class="btn-danger btn-table" onclick="deleteFeaturedType('${t.id}')">Delete</button>
+          </div>
         </div>
       </div>
     `).join('');
@@ -1357,6 +1365,16 @@ function featuredFormHtml(t) {
     <div class="form-group"><label>Name</label><input type="text" id="ft-name" class="form-input" value="${t?.name || ''}" /></div>
     <div class="form-group"><label>Description</label><input type="text" id="ft-desc" class="form-input" value="${t?.description || ''}" /></div>
     <div class="form-group"><label>Order</label><input type="number" id="ft-order" class="form-input" value="${t?.order ?? 0}" min="0" /></div>
+    <div class="form-group" style="border:1px solid var(--cream-mid);border-radius:6px;padding:0.75rem;">
+      <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;font-weight:600;margin-bottom:0.5rem;">
+        <input type="checkbox" id="ft-featured" ${t?.featured ? 'checked' : ''} /> Show in homepage carousel
+      </label>
+      <p style="font-size:0.75rem;color:var(--walnut-light);margin:0;">Maximum 5 types can be featured. Only featured types appear on the homepage.</p>
+      <div class="form-group" style="margin:0.5rem 0 0;" id="ft-featured-order-group" ${t?.featured ? '' : 'style="display:none;margin:0.5rem 0 0;"'}>
+        <label style="font-size:0.75rem;">Carousel Order</label>
+        <input type="number" id="ft-featured-order" class="form-input" value="${t?.featuredOrder ?? 0}" min="0" step="1" style="width:80px;" />
+      </div>
+    </div>
     <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.85rem;">
       <input type="checkbox" id="ft-active" ${t?.active !== false ? 'checked' : ''} /> Active
     </label>
@@ -1388,6 +1406,7 @@ document.getElementById('add-featured-btn').addEventListener('click', () => {
   featuredEditId = null;
   openModal('New Featured Type', featuredFormHtml(null));
   document.getElementById('ft-save-btn').addEventListener('click', saveFeaturedType);
+  document.getElementById('ft-featured')?.addEventListener('change', toggleFeaturedOrder);
 });
 
 window.editFeaturedType = (id) => {
@@ -1398,8 +1417,15 @@ window.editFeaturedType = (id) => {
     if (!t) { closeModal(); showToast('Not found'); return; }
     document.getElementById('modal-body').innerHTML = featuredFormHtml(t);
     document.getElementById('ft-save-btn').addEventListener('click', saveFeaturedType);
+    document.getElementById('ft-featured')?.addEventListener('change', toggleFeaturedOrder);
   }).catch(e => { showToast(e.message); closeModal(); });
 };
+
+function toggleFeaturedOrder() {
+  const cb = document.getElementById('ft-featured');
+  const grp = document.getElementById('ft-featured-order-group');
+  if (grp) grp.style.display = cb?.checked ? 'block' : 'none';
+}
 
 async function saveFeaturedType() {
   const imageUrl = document.getElementById('ft-preview')?.getAttribute('src') || '';
@@ -1407,9 +1433,11 @@ async function saveFeaturedType() {
   const description = document.getElementById('ft-desc').value.trim();
   const order = parseInt(document.getElementById('ft-order').value) || 0;
   const active = document.getElementById('ft-active').checked;
+  const featured = document.getElementById('ft-featured')?.checked || false;
+  const featuredOrder = parseInt(document.getElementById('ft-featured-order')?.value) || 0;
   if (!name) { showToast('Name is required'); return; }
   try {
-    const body = JSON.stringify({ name, description, imageUrl, order, active });
+    const body = JSON.stringify({ name, description, imageUrl, order, active, featured, featuredOrder });
     if (featuredEditId) { await api(`/featured-types/${featuredEditId}`, { method: 'PUT', body }); showToast('Updated'); }
     else { await api('/featured-types', { method: 'POST', body }); showToast('Added'); }
     closeModal(); loadFeaturedTypes();

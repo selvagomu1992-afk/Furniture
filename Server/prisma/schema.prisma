@@ -192,14 +192,16 @@ model HeroSlide {
 
 // ─── FEATURED TYPE ───────────────────────────────
 model FeaturedType {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  imageUrl    String?
-  order       Int      @default(0)
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  imageUrl      String?
+  order         Int      @default(0)
+  active        Boolean  @default(true)
+  featured      Boolean  @default(false)
+  featuredOrder Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("featured_types")
 }

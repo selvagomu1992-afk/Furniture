@@ -455,19 +455,22 @@ export const getFeaturedTypes = asyncHandler(async (_req, res) => {
 });
 
 export const createFeaturedType = asyncHandler(async (req, res) => {
-  const { name, description, imageUrl, order } = req.body;
+  const { name, description, imageUrl, order, featured, featuredOrder } = req.body;
   if (!name) return res.status(400).json({ success: false, message: 'Name required' });
   const ft = await prisma.featuredType.create({
-    data: { name, description, imageUrl, order: parseInt(order) || 0 },
+    data: { name, description, imageUrl, order: parseInt(order) || 0, featured: !!featured, featuredOrder: parseInt(featuredOrder) || 0 },
   });
   res.status(201).json({ success: true, type: ft });
 });
 
 export const updateFeaturedType = asyncHandler(async (req, res) => {
-  const { name, description, imageUrl, order, active } = req.body;
+  const { name, description, imageUrl, order, active, featured, featuredOrder } = req.body;
+  const data = { name, description, imageUrl, order: parseInt(order), active };
+  if (typeof featured === 'boolean') data.featured = featured;
+  if (featuredOrder !== undefined) data.featuredOrder = parseInt(featuredOrder) || 0;
   const ft = await prisma.featuredType.update({
     where: { id: req.params.id },
-    data: { name, description, imageUrl, order: parseInt(order), active },
+    data,
   });
   res.json({ success: true, type: ft });
 });
@@ -488,8 +491,9 @@ export const getActiveHeroSlides = asyncHandler(async (_req, res) => {
 
 export const getActiveFeaturedTypes = asyncHandler(async (_req, res) => {
   const types = await prisma.featuredType.findMany({
-    where: { active: true },
-    orderBy: { order: 'asc' },
+    where: { active: true, featured: true },
+    orderBy: { featuredOrder: 'asc' },
+    take: 5,
   });
   res.json({ success: true, types });
 });
