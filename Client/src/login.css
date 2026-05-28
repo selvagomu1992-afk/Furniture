@@ -120,12 +120,17 @@ body.cursor-hover .lp-cursor-follower { opacity: 0; }
 /* ── On right panel (mobile) ── */
 @media (max-width: 900px) {
   .back-home {
+    right: 1.75rem;
+    left: auto;
     color: var(--walnut);
     background: rgba(245,240,232,0.9);
     border-color: var(--cream-mid);
   }
   .back-home:hover {
     background: var(--cream-dark);
+  }
+  .auth-header .logo-text {
+    display: none;
   }
 }
 
