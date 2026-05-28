@@ -2205,6 +2205,7 @@ body.cursor-hover .cursor-follower {
     gap: 0.75rem;
   }
   .nav-links { display: none; }
+  .logo-text { display: none; }
   .nav-actions {
     gap: 0.5rem;
   }
