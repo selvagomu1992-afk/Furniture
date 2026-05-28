@@ -1,6 +1,6 @@
 // src/controllers/orderController.js
 import prisma from '../config/db.js';
-import { inngest } from '../inngest/client.js';
+import transporter from '../config/mailer.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
 // ─── PLACE ORDER ────────────────────────────────
@@ -59,11 +59,54 @@ export const placeOrder = asyncHandler(async (req, res) => {
     },
   });
 
-  // Fire order confirmation email via Inngest
-  await inngest.send({
-    name: 'order/placed',
-    data: { order, user: order.user },
-  });
+  // Send order confirmation email directly (non-blocking)
+  transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: order.user.email,
+    subject: `Commission Received — Ref: ${order.referenceCode} | Jangid`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <body style="font-family:'Georgia',serif;background:#F5F0E8;margin:0;padding:0;">
+        <div style="max-width:580px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;">
+          <div style="background:#2C1810;padding:32px 40px;text-align:center;">
+            <h1 style="color:#F5F0E8;font-size:1.3rem;font-weight:300;letter-spacing:0.06em;margin:0;">JANGID</h1>
+          </div>
+          <div style="padding:40px;">
+            <div style="background:#F5F0E8;border-radius:8px;padding:20px 24px;margin-bottom:28px;border-left:3px solid #7A8B6F;">
+              <p style="margin:0;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:#7A4F36;">Commission Reference</p>
+              <p style="margin:6px 0 0;font-size:1.4rem;color:#2C1810;font-weight:500;">${order.referenceCode}</p>
+            </div>
+            <h2 style="font-size:1.6rem;font-weight:400;color:#2C1810;margin:0 0 16px;">Commission received, ${order.user.firstName}.</h2>
+            <p style="color:#4A2E1E;line-height:1.8;margin-bottom:24px;">Thank you for your order. Our team will review your specifications and reach out within <strong>48 hours</strong> with a full quote and production timeline.</p>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+              <tr style="border-bottom:1px solid #E8DFD0;">
+                <td style="padding:10px 0;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7A4F36;">Piece</td>
+                <td style="padding:10px 0;text-align:right;color:#2C1810;">${order.items?.[0]?.product?.name || 'Custom Piece'}</td>
+              </tr>
+              <tr style="border-bottom:1px solid #E8DFD0;">
+                <td style="padding:10px 0;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7A4F36;">Material</td>
+                <td style="padding:10px 0;text-align:right;color:#2C1810;text-transform:capitalize;">${order.material}</td>
+              </tr>
+              <tr style="border-bottom:1px solid #E8DFD0;">
+                <td style="padding:10px 0;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7A4F36;">Lead Time</td>
+                <td style="padding:10px 0;text-align:right;color:#2C1810;text-transform:capitalize;">${order.timeline}</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7A4F36;">Estimated Total</td>
+                <td style="padding:10px 0;text-align:right;font-size:1.2rem;color:#C4714A;">$${order.estimatedPrice?.toLocaleString()}</td>
+              </tr>
+            </table>
+            <a href="${process.env.CLIENT_URL}" style="display:inline-block;background:#2C1810;color:#F5F0E8;padding:14px 32px;border-radius:6px;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;font-family:'Inter',sans-serif;">Visit Jangid</a>
+          </div>
+          <div style="padding:20px 40px;border-top:1px solid #E8DFD0;color:#7A4F36;font-size:0.75rem;">
+            <p style="margin:0;">Questions? Reply to this email or call us.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }).catch(err => console.error('❌ Order confirmation email failed:', err));
 
   res.status(201).json({ success: true, order });
 });

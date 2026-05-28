@@ -54,11 +54,35 @@ export const register = asyncHandler(async (req, res) => {
     data: { firstName, lastName, email, passwordHash, newsletter: !!newsletter },
   });
 
-  // Fire welcome email in background
-  await inngest.send({
-    name: 'user/registered',
-    data: { firstName: user.firstName, email: user.email },
-  });
+  // Fire welcome email directly (non-blocking)
+  transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: user.email,
+    subject: 'Welcome to Jangid 🌿',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <body style="font-family:'Georgia',serif;background:#F5F0E8;margin:0;padding:0;">
+        <div style="max-width:580px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;margin-top:40px;">
+          <div style="background:#2C1810;padding:40px 40px 32px;text-align:center;">
+            <div style="width:52px;height:52px;background:#F5F0E8;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:600;color:#2C1810;margin-bottom:16px;">J</div>
+            <h1 style="color:#F5F0E8;font-size:1.6rem;font-weight:300;margin:0;letter-spacing:0.04em;">JANGID</h1>
+            <p style="color:rgba(245,240,232,0.6);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;margin:8px 0 0;">Handcrafted for lifetimes</p>
+          </div>
+          <div style="padding:40px;">
+            <h2 style="font-size:1.8rem;font-weight:400;color:#2C1810;margin:0 0 16px;">Welcome, ${user.firstName}.</h2>
+            <p style="color:#4A2E1E;line-height:1.8;margin-bottom:20px;">Your Jangid account is ready. You can now track commissions, manage your wishlist, and get early access to new collections.</p>
+            <p style="color:#4A2E1E;line-height:1.8;margin-bottom:32px;">Every piece we create starts with a conversation. When you're ready to begin yours, we're here.</p>
+            <a href="${process.env.CLIENT_URL}" style="display:inline-block;background:#2C1810;color:#F5F0E8;padding:14px 32px;border-radius:6px;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;font-family:'Inter',sans-serif;">Explore Collections</a>
+          </div>
+          <div style="padding:24px 40px;border-top:1px solid #E8DFD0;color:#7A4F36;font-size:0.78rem;line-height:1.6;">
+            <p style="margin:0;">&copy; 2025 Jangid &middot; <a href="${process.env.CLIENT_URL}" style="color:#C4714A;">jangid.com</a></p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }).catch(err => console.error('❌ Welcome email failed:', err));
 
   sendTokenResponse(user, 201, res);
 });
@@ -122,7 +146,7 @@ export const login = asyncHandler(async (req, res) => {
       </body>
       </html>
     `,
-  }).catch(err => console.error('Login notification email failed:', err.message));
+  }).catch(err => console.error('❌ Login notification email failed:', err));
 
   sendTokenResponse(user, 200, res);
 });
@@ -179,10 +203,29 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
   const resetUrl = `${process.env.CLIENT_URL}/reset-password.html?token=${resetToken}`;
 
-  await inngest.send({
-    name: 'user/password-reset-requested',
-    data: { email: user.email, firstName: user.firstName, resetUrl },
-  });
+  transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: user.email,
+    subject: 'Reset your Jangid password',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <body style="font-family:'Georgia',serif;background:#F5F0E8;margin:0;padding:0;">
+        <div style="max-width:520px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;">
+          <div style="background:#2C1810;padding:28px 36px;text-align:center;">
+            <h1 style="color:#F5F0E8;font-size:1.2rem;font-weight:300;letter-spacing:0.06em;margin:0;">JANGID</h1>
+          </div>
+          <div style="padding:40px;">
+            <h2 style="font-size:1.5rem;font-weight:400;color:#2C1810;margin:0 0 16px;">Password Reset</h2>
+            <p style="color:#4A2E1E;line-height:1.8;margin-bottom:28px;">Hi ${user.firstName}, click the button below to reset your password. This link expires in <strong>30 minutes</strong>.</p>
+            <a href="${resetUrl}" style="display:inline-block;background:#C4714A;color:#fff;padding:14px 32px;border-radius:6px;text-decoration:none;font-size:0.875rem;letter-spacing:0.08em;text-transform:uppercase;font-family:'Inter',sans-serif;">Reset Password</a>
+            <p style="color:#7A4F36;font-size:0.78rem;margin-top:24px;line-height:1.6;">If you didn't request this, you can safely ignore this email. Your password won't change.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  }).catch(err => console.error('❌ Password reset email failed:', err));
 
   res.json({ success: true, message: 'If that account exists, a reset link has been sent' });
 });
