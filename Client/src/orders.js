@@ -42,7 +42,7 @@ async function loadOrders() {
           <span class="order-card-date">${new Date(o.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
         </div>
         <div class="order-card-right">
-          <span class="order-card-total">$${(o.finalPrice || o.estimatedPrice || 0).toLocaleString()}</span>
+          <span class="order-card-total">₹${(o.finalPrice || o.estimatedPrice || 0).toLocaleString()}</span>
           <span class="badge-order status-${o.status}">${o.status}</span>
           <button class="auth-btn outline" onclick="viewOrder('${o.id}')">View</button>
         </div>
@@ -100,9 +100,9 @@ window.viewOrder = async (id) => {
         <div class="order-item-img">${item.product?.imageUrl ? `<img src="${item.product.imageUrl}" alt="" />` : '<span>—</span>'}</div>
         <div class="order-item-info">
           <strong>${item.product?.name || 'Unknown'}</strong>
-          <span>Qty: ${item.quantity} × $${item.price.toLocaleString()}</span>
+          <span>Qty: ${item.quantity} × ₹${item.price.toLocaleString()}</span>
         </div>
-        <div class="order-item-total">$${(item.quantity * item.price).toLocaleString()}</div>
+        <div class="order-item-total">₹${(item.quantity * item.price).toLocaleString()}</div>
       </div>
     `).join('');
 
@@ -133,8 +133,8 @@ window.viewOrder = async (id) => {
         <div class="order-items-list">${itemsHtml}</div>
       </div>
       <div class="order-total-bar">
-        <span>Estimated: $${o.estimatedPrice.toLocaleString()}</span>
-        ${o.finalPrice ? `<span><strong>Final: $${o.finalPrice.toLocaleString()}</strong></span>` : ''}
+        <span>Estimated: ₹${o.estimatedPrice.toLocaleString()}</span>
+        ${o.finalPrice ? `<span><strong>Final: ₹${o.finalPrice.toLocaleString()}</strong></span>` : ''}
       </div>
     `);
   } catch (e) {

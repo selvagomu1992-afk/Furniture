@@ -363,21 +363,21 @@ function renderCart() {
         <div class="cart-item-info">
           <div class="cart-item-name">${item.name}</div>
           <div class="cart-item-detail">${item.category} · Solid Walnut</div>
-          <div class="cart-item-price">$${item.price.toLocaleString()}</div>
+          <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
         </div>
         <div class="cart-item-qty">
           <button class="cart-qty-btn" data-id="${item.id}" data-delta="-1">−</button>
           <span class="cart-qty-value">${item.qty}</span>
           <button class="cart-qty-btn" data-id="${item.id}" data-delta="1">+</button>
         </div>
-        <div class="cart-item-line-total">$${lineTotal.toLocaleString()}</div>
+        <div class="cart-item-line-total">₹${lineTotal.toLocaleString()}</div>
         <button class="cart-item-remove" data-id="${item.id}" aria-label="Remove ${item.name}">✕</button>
       </div>
     `;
   });
 
   itemsEl.innerHTML = html;
-  if (totalEl) totalEl.textContent = '$' + total.toLocaleString();
+  if (totalEl) totalEl.textContent = '₹' +  total.toLocaleString();
 
   itemsEl.querySelectorAll('.cart-item-remove').forEach(btn => {
     btn.addEventListener('click', () => removeFromCart(btn.dataset.id));
@@ -567,7 +567,7 @@ function renderProducts(filter = 'all') {
         <h3 class="card-name">${p.name}</h3>
         <p class="card-desc">${p.desc}</p>
         <div class="card-footer">
-          <span class="card-price">$${p.price.toLocaleString()}</span>
+          <span class="card-price">₹${p.price.toLocaleString()}</span>
           <div class="card-materials">${dotsHtml}</div>
         </div>
       </div>
@@ -701,7 +701,7 @@ function renderPieceSelector() {
     <div class="piece-option" id="piece-opt-${p.id}" data-id="${p.id}" data-price="${p.basePrice}">
       <div class="piece-icon">${p.icon}</div>
       <div class="piece-name">${p.name}</div>
-      <div class="piece-price-tag">from $${p.basePrice.toLocaleString()}</div>
+      <div class="piece-price-tag">from ₹${p.basePrice.toLocaleString()}</div>
     </div>
   `).join('');
 
@@ -740,7 +740,7 @@ function updatePriceEstimate() {
   const el = document.getElementById('price-estimate');
   if (el) {
     el.style.transform = 'scale(1.12)';
-    el.textContent = '$' + total.toLocaleString();
+    el.textContent = '₹' +  total.toLocaleString();
     setTimeout(() => el.style.transform = 'scale(1)', 300);
   }
 
@@ -831,7 +831,7 @@ function renderReview() {
   `).join('') + `
     <div class="review-row">
       <span class="review-row-label">Estimated Total</span>
-      <span class="review-row-value review-total">$${(state.orderData.estimatedPrice || 0).toLocaleString()}</span>
+      <span class="review-row-value review-total">₹${(state.orderData.estimatedPrice || 0).toLocaleString()}</span>
     </div>
   `;
 }
@@ -1302,7 +1302,7 @@ function initNavSearch() {
             <div class="search-result-name">${p.name}</div>
             <div class="search-result-cat">${p.category}</div>
           </div>
-          <span class="search-result-price">$${p.price.toLocaleString()}</span>
+          <span class="search-result-price">₹${p.price.toLocaleString()}</span>
         </div>
       `).join('');
 

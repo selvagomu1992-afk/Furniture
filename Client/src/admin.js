@@ -137,7 +137,7 @@ async function loadDashboard() {
     document.getElementById('stat-products').textContent = data.stats.totalProducts;
     document.getElementById('stat-orders').textContent = data.stats.totalOrders;
     document.getElementById('stat-collections').textContent = data.stats.totalCollections;
-    document.getElementById('stat-revenue').textContent = `$${(data.stats.totalRevenue || 0).toLocaleString()}`;
+    document.getElementById('stat-revenue').textContent = `₹${(data.stats.totalRevenue || 0).toLocaleString()}`;
     document.getElementById('stat-messages').textContent = data.stats.totalContactMessages;
 
     const container = document.getElementById('orders-by-status');
@@ -247,7 +247,7 @@ async function loadProducts() {
         <td><div class="product-thumb">${p.imageUrl ? `<img src="${p.imageUrl}" alt="" />` : '<span>—</span>'}</div></td>
         <td><strong>${p.name}</strong></td>
         <td>${p.category}</td>
-        <td>$${p.basePrice.toLocaleString()}</td>
+        <td>₹${p.basePrice.toLocaleString()}</td>
         <td>${p.collection?.name || '—'}</td>
         <td><span class="badge-stock ${p.inStock ? 'in' : 'out'}">${p.inStock ? 'In Stock' : 'Out'}</span></td>
         <td>
@@ -285,7 +285,7 @@ function getProductFormHtml(p) {
       </div>
       <div class="form-group"><label>Description</label><textarea id="prod-desc" class="form-input" rows="3">${p?.description || ''}</textarea></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div class="form-group"><label>Base Price ($)</label><input type="number" id="prod-price" class="form-input" value="${p?.basePrice || ''}" step="1" /></div>
+        <div class="form-group"><label>Base Price (₹)</label><input type="number" id="prod-price" class="form-input" value="${p?.basePrice || ''}" step="1" /></div>
         <div class="form-group"><label>Collection</label><select id="prod-collection" class="form-input"><option value="">None</option>${colOpts}</select></div>
       </div>
       <div class="form-group"><label>Image</label>${imageUploadHtml(p?.imageUrl || '', 'prod-img')}</div>
@@ -454,7 +454,7 @@ async function loadOrders() {
           <span class="addr-truncate">${o.user?.address || o.deliveryAddress || '—'}</span>
         </td>
         <td>${o._count?.items ?? o.items?.length ?? 0}</td>
-        <td>$${(o.finalPrice || o.estimatedPrice || 0).toLocaleString()}</td>
+        <td>₹${(o.finalPrice || o.estimatedPrice || 0).toLocaleString()}</td>
         <td><span class="badge-order status-${o.status}">${o.status}</span></td>
         <td><span class="badge-order payment-${o.paymentStatus}">${o.paymentStatus}</span></td>
         <td>${new Date(o.createdAt).toLocaleDateString()}</td>
@@ -490,14 +490,14 @@ window.viewOrder = async (id) => {
         <div class="order-item-img">${item.product?.imageUrl ? `<img src="${item.product.imageUrl}" alt="" />` : '<span>—</span>'}</div>
         <div class="order-item-info">
           <strong>${item.product?.name || 'Unknown'}</strong>
-          <span class="item-price-label">$${item.price.toLocaleString()} ea</span>
+          <span class="item-price-label">₹${item.price.toLocaleString()} ea</span>
         </div>
         <div class="order-item-qty">
           <button class="qty-btn" onclick="updateItemQty('${id}','${item.id}',${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
           <span class="qty-value">${item.quantity}</span>
           <button class="qty-btn" onclick="updateItemQty('${id}','${item.id}',${item.quantity + 1})">+</button>
         </div>
-        <div class="order-item-total">$${(item.quantity * item.price).toLocaleString()}</div>
+        <div class="order-item-total">₹${(item.quantity * item.price).toLocaleString()}</div>
       </div>
     `).join('');
     openModal(`Order #${o.referenceCode?.slice(0,8) || o.id.slice(0,8)}`, `
@@ -538,8 +538,8 @@ window.viewOrder = async (id) => {
           <div class="order-items-list">${itemsHtml}</div>
         </div>
         <div class="order-total-bar">
-          <span>Estimated: $${o.estimatedPrice.toLocaleString()}</span>
-          ${o.finalPrice ? `<span><strong>Final: $${o.finalPrice.toLocaleString()}</strong></span>` : ''}
+          <span>Estimated: ₹${o.estimatedPrice.toLocaleString()}</span>
+          ${o.finalPrice ? `<span><strong>Final: ₹${o.finalPrice.toLocaleString()}</strong></span>` : ''}
         </div>
       </div>
     `);
@@ -588,8 +588,8 @@ window.printInvoice = async (id) => {
         <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;">${i + 1}</td>
         <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;">${item.product?.name || 'Unknown'}</td>
         <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:center;">${item.quantity}</td>
-        <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:right;">$${item.price.toFixed(2)}</td>
-        <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:right;">$${(item.quantity * item.price).toFixed(2)}</td>
+        <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:right;">₹${item.price.toFixed(2)}</td>
+        <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:right;">₹${(item.quantity * item.price).toFixed(2)}</td>
       </tr>
     `).join('');
 
@@ -676,10 +676,10 @@ window.printInvoice = async (id) => {
         </table>
 
         <table class="totals">
-          <tr><td>Subtotal</td><td>$${subtotal.toFixed(2)}</td></tr>
-          ${rate ? `<tr><td>Delivery</td><td>$${rate.toFixed(2)}</td></tr>` : ''}
-          ${tax ? `<tr><td>Tax (${taxPct}%)</td><td>$${tax.toFixed(2)}</td></tr>` : ''}
-          <tr><td>Total</td><td>$${total.toFixed(2)}</td></tr>
+          <tr><td>Subtotal</td><td>₹${subtotal.toFixed(2)}</td></tr>
+          ${rate ? `<tr><td>Delivery</td><td>₹${rate.toFixed(2)}</td></tr>` : ''}
+          ${tax ? `<tr><td>Tax (${taxPct}%)</td><td>₹${tax.toFixed(2)}</td></tr>` : ''}
+          <tr><td>Total</td><td>₹${total.toFixed(2)}</td></tr>
         </table>
 
         <div class="footer">
@@ -729,8 +729,8 @@ async function printCompanyInvoice(id, company, gst, billingAddr) {
         <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;">${i + 1}</td>
         <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;">${item.product?.name || 'Unknown'}</td>
         <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:center;">${item.quantity}</td>
-        <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:right;">$${item.price.toFixed(2)}</td>
-        <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:right;">$${(item.quantity * item.price).toFixed(2)}</td>
+        <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:right;">₹${item.price.toFixed(2)}</td>
+        <td style="padding:0.5rem 0.6rem;border-bottom:1px solid #ddd;font-size:0.75rem;text-align:right;">₹${(item.quantity * item.price).toFixed(2)}</td>
       </tr>
     `).join('');
 
@@ -822,10 +822,10 @@ async function printCompanyInvoice(id, company, gst, billingAddr) {
         <p class="amount-words">Amount in words: ${numberToWords(total)}</p>
 
         <table class="totals">
-          <tr><td>Subtotal</td><td>$${subtotal.toFixed(2)}</td></tr>
-          ${rate ? `<tr><td>Delivery</td><td>$${rate.toFixed(2)}</td></tr>` : ''}
-          ${tax ? `<tr><td>Tax @ ${taxPct}%</td><td>$${tax.toFixed(2)}</td></tr>` : ''}
-          <tr><td>Total</td><td>$${total.toFixed(2)}</td></tr>
+          <tr><td>Subtotal</td><td>₹${subtotal.toFixed(2)}</td></tr>
+          ${rate ? `<tr><td>Delivery</td><td>₹${rate.toFixed(2)}</td></tr>` : ''}
+          ${tax ? `<tr><td>Tax @ ${taxPct}%</td><td>₹${tax.toFixed(2)}</td></tr>` : ''}
+          <tr><td>Total</td><td>₹${total.toFixed(2)}</td></tr>
         </table>
 
         <div class="footer">
@@ -877,7 +877,7 @@ async function loadCounterBill() {
     cbProducts = data.products || [];
     const select = document.getElementById('cb-product-select');
     select.innerHTML = '<option value="">— Select a product —</option>' +
-      cbProducts.map(p => `<option value="${p.id}" data-price="${p.basePrice}">${p.name} — $${p.basePrice}</option>`).join('');
+      cbProducts.map(p => `<option value="${p.id}" data-price="${p.basePrice}">${p.name} — ₹${p.basePrice}</option>`).join('');
   } catch (e) { showToast(`Counter Bill: ${e.message}`); }
   renderCbTable();
 }
@@ -910,7 +910,7 @@ function renderCbTable() {
       <td><strong>${item.desc}</strong></td>
       <td><input type="number" class="form-input cb-qty-inline" value="${item.qty}" min="1" style="width:60px;text-align:center;padding:0.3rem 0.5rem;" data-index="${i}" /></td>
       <td><input type="number" class="form-input cb-rate-inline" value="${item.rate}" step="0.01" min="0" style="width:100px;text-align:right;padding:0.3rem 0.5rem;" data-index="${i}" /></td>
-      <td style="font-weight:600;">$${(item.qty * item.rate).toFixed(2)}</td>
+      <td style="font-weight:600;">₹${(item.qty * item.rate).toFixed(2)}</td>
       <td><button class="btn-danger" style="padding:0.2rem 0.5rem;font-size:0.7rem;" onclick="removeCbItem(${i})">&times;</button></td>
     </tr>
   `).join('');
@@ -1601,7 +1601,7 @@ async function loadPincodes() {
         </div>
         <div class="pincode-card-center">
           <span class="pincode-charge-label">Delivery</span>
-          <span class="pincode-charge">$${p.deliveryCharge.toFixed(2)}</span>
+          <span class="pincode-charge">₹${p.deliveryCharge.toFixed(2)}</span>
         </div>
         <div class="pincode-card-right">
           <button class="btn-secondary btn-table" onclick="editPincode('${p.id}','${p.pincode}','${p.areaName || ''}',${p.deliveryCharge})">Edit</button>
@@ -1626,7 +1626,7 @@ document.getElementById('pincode-add-btn').addEventListener('click', () => {
   openModal('Add Pincode', `
     <div class="form-group"><label>Pincode</label><input type="text" id="pin-code" class="form-input" maxlength="10" /></div>
     <div class="form-group"><label>Area Name</label><input type="text" id="pin-area" class="form-input" /></div>
-    <div class="form-group"><label>Delivery Charge ($)</label><input type="number" id="pin-charge" class="form-input" step="0.01" min="0" /></div>
+    <div class="form-group"><label>Delivery Charge (₹)</label><input type="number" id="pin-charge" class="form-input" step="0.01" min="0" /></div>
     <div style="display:flex;gap:0.75rem;margin-top:1rem;">
       <button class="btn-primary" id="pin-save">Save</button>
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
@@ -1640,7 +1640,7 @@ window.editPincode = (id, pincode, areaName, charge) => {
   openModal('Edit Pincode', `
     <div class="form-group"><label>Pincode</label><input type="text" id="pin-code" class="form-input" value="${pincode}" readonly style="background:var(--cream-mid);cursor:not-allowed;" /></div>
     <div class="form-group"><label>Area Name</label><input type="text" id="pin-area" class="form-input" value="${areaName}" /></div>
-    <div class="form-group"><label>Delivery Charge ($)</label><input type="number" id="pin-charge" class="form-input" step="0.01" min="0" value="${charge}" /></div>
+    <div class="form-group"><label>Delivery Charge (₹)</label><input type="number" id="pin-charge" class="form-input" step="0.01" min="0" value="${charge}" /></div>
     <div style="display:flex;gap:0.75rem;margin-top:1rem;">
       <button class="btn-primary" id="pin-save">Update</button>
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
