@@ -976,6 +976,7 @@ async function submitOrder() {
     const data = await res.json();
 
     if (data.success) {
+      const orderId = data.order.id;
       // Save address to profile so we don't ask again
       try {
         const fn = document.getElementById('first-name')?.value.trim();
@@ -992,7 +993,20 @@ async function submitOrder() {
           localStorage.setItem('user', JSON.stringify({ ...existing, ...addrData.user }));
         }
       } catch (_) { /* non-blocking */ }
-      showOrderSuccess(data.order.referenceCode || data.order.id.slice(0, 8).toUpperCase());
+      // Initiate Cashfree payment
+      try {
+        const payRes = await fetch(`${API_BASE}/api/payments/create-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ orderId }),
+        });
+        const payData = await payRes.json();
+        if (payData.success && payData.paymentSessionId) {
+          window.Cashfree && new window.Cashfree(payData.paymentSessionId).redirect({ redirectTarget: 'REDIRECT_TARGET_SELF' });
+          return;
+        }
+      } catch (_) {}
+      showOrderSuccess(data.order.referenceCode || orderId.slice(0, 8).toUpperCase());
     } else {
       showToast(data.message || 'Failed to place order. Please try again.');
     }

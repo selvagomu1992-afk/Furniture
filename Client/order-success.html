@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Status — Jangid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f8f5f0; color: #2c1810; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .status-card { background: #fff; border-radius: 16px; padding: 3rem 2.5rem; max-width: 480px; width: 90%; text-align: center; box-shadow: 0 4px 24px rgba(44,24,16,0.08); }
+    .icon { font-size: 3rem; margin-bottom: 1rem; }
+    h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 500; margin-bottom: 0.5rem; }
+    p { color: #6b5a4a; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .ref { font-size: 0.75rem; color: #9a8a7a; }
+    .btn { display: inline-block; padding: 0.7rem 2rem; border-radius: 100px; text-decoration: none; font-size: 0.85rem; font-weight: 500; background: #2c1810; color: #fff; transition: opacity 0.2s; }
+    .btn:hover { opacity: 0.85; }
+    .loading { color: #9a8a7a; }
+    .status-success .icon { color: #3a7a4f; }
+    .status-failed .icon { color: #b33a3a; }
+  </style>
+</head>
+<body>
+  <div class="status-card" id="status-card">
+    <div class="icon" id="status-icon">⏳</div>
+    <h1 id="status-title">Checking payment...</h1>
+    <p id="status-msg">Please wait while we confirm your payment.</p>
+    <div class="ref" id="status-ref"></div>
+    <a href="/orders.html" class="btn" style="margin-top:1rem;">View My Orders</a>
+  </div>
+
+  <script type="module">
+    const API = 'https://furniture-qr98.onrender.com/api';
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('order_id');
+
+    async function checkStatus() {
+      if (!orderId) {
+        document.getElementById('status-icon').textContent = '⚠️';
+        document.getElementById('status-title').textContent = 'No order reference';
+        document.getElementById('status-msg').textContent = 'We could not find your order details. Please check your Orders page.';
+        return;
+      }
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          document.getElementById('status-icon').textContent = '🔒';
+          document.getElementById('status-title').textContent = 'Please sign in';
+          document.getElementById('status-msg').innerHTML = 'Sign in to view your order status. <a href="/login.html" style="color:#2c1810;">Go to Login</a>';
+          return;
+        }
+        const res = await fetch(`${API}/payments/verify/${orderId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.success) {
+          const paid = data.paymentStatus === 'PAID';
+          document.getElementById('status-card').className = 'status-card ' + (paid ? 'status-success' : 'status-failed');
+          document.getElementById('status-icon').textContent = paid ? '✅' : '⏳';
+          document.getElementById('status-title').textContent = paid ? 'Payment Successful!' : 'Payment Pending';
+          document.getElementById('status-msg').textContent = paid
+            ? 'Thank you! Your order has been confirmed. We will begin crafting your piece soon.'
+            : 'Your order has been placed but the payment is pending. You can complete it from your Orders page.';
+          document.getElementById('status-ref').textContent = data.referenceCode ? `Ref: ${data.referenceCode}` : '';
+        } else {
+          throw new Error(data.message);
+        }
+      } catch (e) {
+        document.getElementById('status-icon').textContent = '⚠️';
+        document.getElementById('status-title').textContent = 'Could not verify';
+        document.getElementById('status-msg').textContent = 'Unable to check payment status. Visit your Orders page.';
+      }
+    }
+    checkStatus();
+  </script>
+</body>
+</html>
