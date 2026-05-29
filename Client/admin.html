@@ -76,6 +76,10 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M21 9l-5-5M3 9l5-5M3 15l5 5M21 15l-5 5"/></svg>
           Hero
         </button>
+        <button class="nav-item" data-section="carousel">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M8 2l4 2 4-2M4 20v2M20 20v2"/></svg>
+          Carousel
+        </button>
       </nav>
       <div class="sidebar-footer">
         <button class="nav-item" id="back-to-site">
@@ -281,6 +285,19 @@
           <div id="hero-slides-container"></div>
           <button class="btn-primary" id="add-hero-btn" style="margin-top:0.75rem;">+ Add Image</button>
         </div>
+      </section>
+
+      <!-- Carousel -->
+      <section class="admin-section" id="section-carousel">
+        <div class="section-top"><h1>Carousel &mdash; Featured Types</h1></div>
+        <div class="panel">
+          <p class="muted" style="margin-bottom:0.75rem;">Select up to 5 product categories to show in the homepage carousel. Drag or use the dropdowns to assign each slot.</p>
+          <div id="carousel-slots"></div>
+          <button class="btn-primary" id="carousel-save-slots" style="margin-top:0.75rem;">Save Carousel</button>
+        </div>
+
+        <div class="section-top" style="margin-top:1.5rem;"><h2>All Featured Types</h2><button class="btn-primary" id="add-featured-btn">+ Add Type</button></div>
+        <div id="featured-types-container"></div>
       </section>
     </main>
   </div>

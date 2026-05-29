@@ -109,6 +109,7 @@ document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
     const section = document.getElementById(`section-${btn.dataset.section}`);
     if (section) section.classList.add('active');
     if (btn.dataset.section === 'counterbill') loadCounterBill();
+    if (btn.dataset.section === 'carousel') loadFeaturedTypes();
     closeSidebar();
   });
 });
@@ -1676,4 +1677,5 @@ document.addEventListener('DOMContentLoaded', () => {
   loadEnquiries();
   loadPincodes();
   loadHeroSlides();
+  loadFeaturedTypes();
 });
