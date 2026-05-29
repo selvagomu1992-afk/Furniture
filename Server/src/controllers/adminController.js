@@ -436,9 +436,17 @@ export const createHeroSlide = asyncHandler(async (req, res) => {
 
 export const updateHeroSlide = asyncHandler(async (req, res) => {
   const { imageUrl, title, subtitle, link, order, active, transition } = req.body;
+  const data = {};
+  if (imageUrl !== undefined) data.imageUrl = imageUrl;
+  if (title !== undefined) data.title = title;
+  if (subtitle !== undefined) data.subtitle = subtitle;
+  if (link !== undefined) data.link = link;
+  if (order !== undefined) data.order = parseInt(order);
+  if (active !== undefined) data.active = active;
+  if (transition !== undefined) data.transition = transition;
   const slide = await prisma.heroSlide.update({
     where: { id: req.params.id },
-    data: { imageUrl, title, subtitle, link, order: parseInt(order), active, transition },
+    data,
   });
   res.json({ success: true, slide });
 });
@@ -465,7 +473,12 @@ export const createFeaturedType = asyncHandler(async (req, res) => {
 
 export const updateFeaturedType = asyncHandler(async (req, res) => {
   const { name, description, imageUrl, order, active, featured, featuredOrder } = req.body;
-  const data = { name, description, imageUrl, order: parseInt(order), active };
+  const data = {};
+  if (name !== undefined) data.name = name;
+  if (description !== undefined) data.description = description;
+  if (imageUrl !== undefined) data.imageUrl = imageUrl;
+  if (order !== undefined) data.order = parseInt(order);
+  if (active !== undefined) data.active = active;
   if (typeof featured === 'boolean') data.featured = featured;
   if (featuredOrder !== undefined) data.featuredOrder = parseInt(featuredOrder) || 0;
   const ft = await prisma.featuredType.update({
