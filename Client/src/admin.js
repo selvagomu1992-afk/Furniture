@@ -110,6 +110,7 @@ document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
     if (section) section.classList.add('active');
     if (btn.dataset.section === 'counterbill') loadCounterBill();
     if (btn.dataset.section === 'carousel') loadFeaturedTypes();
+    if (btn.dataset.section === 'users') { usersPage = 1; loadUsers(); }
     closeSidebar();
   });
 });
@@ -1666,6 +1667,45 @@ async function savePincode() {
   } catch (e) { showToast(e.message); }
 }
 
+// ─── Users ──────────────────────────────────
+let usersPage = 1;
+async function loadUsers() {
+  const search = document.getElementById('users-search')?.value || '';
+  try {
+    const params = new URLSearchParams({ page: usersPage, limit: 20 });
+    if (search) params.set('search', search);
+    const data = await api(`/users?${params}`);
+    const tbody = document.getElementById('users-tbody');
+    if (!data.users.length) {
+      tbody.innerHTML = '<tr><td colspan="8"><p class="muted" style="text-align:center;padding:2rem;">No users found</p></td></tr>';
+      document.getElementById('users-pagination').innerHTML = '';
+      return;
+    }
+    tbody.innerHTML = data.users.map(u => `
+      <tr>
+        <td><strong>${u.firstName} ${u.lastName}</strong></td>
+        <td>${u.email}</td>
+        <td>${u.phone || '<span class="muted">—</span>'}</td>
+        <td><span class="badge ${u.role === 'ADMIN' ? 'badge-admin' : 'badge-customer'}">${u.role}</span></td>
+        <td>${u.country || '<span class="muted">—</span>'}</td>
+        <td>${u._count?.orders ?? 0}</td>
+        <td>${u.newsletter ? '✓' : '—'}</td>
+        <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+      </tr>
+    `).join('');
+    // Pagination
+    const pages = data.pages || 1;
+    const pag = document.getElementById('users-pagination');
+    pag.innerHTML = Array.from({ length: pages }, (_, i) =>
+      `<button class="btn-table ${i + 1 === usersPage ? 'btn-primary' : 'btn-secondary'}" data-page="${i + 1}" style="padding:0.3rem 0.6rem;font-size:0.75rem;">${i + 1}</button>`
+    ).join('');
+    pag.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => { usersPage = parseInt(btn.dataset.page); loadUsers(); }));
+  } catch (e) { showToast(e.message); }
+}
+
+document.getElementById('users-search-btn')?.addEventListener('click', () => { usersPage = 1; loadUsers(); });
+document.getElementById('users-search')?.addEventListener('keydown', e => { if (e.key === 'Enter') { usersPage = 1; loadUsers(); } });
+
 // ─── Init all sections ──────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   loadDashboard();
@@ -1678,4 +1718,5 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPincodes();
   loadHeroSlides();
   loadFeaturedTypes();
+  loadUsers();
 });

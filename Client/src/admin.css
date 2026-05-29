@@ -193,6 +193,8 @@ input, select, textarea, button { font-family: inherit; font-size: inherit; }
 .badge-order.payment-PAID { background: rgba(90,155,111,0.15); color: #3a7a4f; }
 .badge-order.payment-REFUNDED { background: rgba(74,46,30,0.1); color: var(--walnut-mid); }
 .badge-order.payment-FAILED { background: rgba(196,74,74,0.12); color: #b33a3a; }
+.badge-admin { font-size:0.62rem;padding:0.2rem 0.5rem;border-radius:100px;font-weight:600;background:rgba(74,46,30,0.12);color:var(--walnut-mid); }
+.badge-customer { font-size:0.62rem;padding:0.2rem 0.5rem;border-radius:100px;font-weight:600;background:rgba(90,155,111,0.15);color:#3a7a4f; }
 
 /* ─── Order Detail Modal ─── */
 .order-detail { display: flex; flex-direction: column; gap: 1.25rem; }
